@@ -1,3 +1,8 @@
-input:checked + span {
+.strike {
   text-decoration: line-through;
+}
+
+td{
+  border: 1px solid black;
+  padding: 3px;
 }

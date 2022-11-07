@@ -10,9 +10,21 @@
 </head>
 <body>
   <input type="text" placeholder="할 일을 입력해 주세요">
-  <P><input type="text" placeholder="분류"></P>
+  <P><input type="text" placeholder="분류" list = "TodoDataList"></P>
+  <datalist id = "TodoDataList">
+    <option value="Personal"></option>
+    <option value="Work"></option>
+  </datalist>
   <button id = "inputBtn">입력</button>
   <ul></ul>
+  <table id = 'todo-Table'>
+    <tr>
+      <td>Checkbox</td>
+      <td>Todo</td>
+      <td>Category</td>
+      <td>Delete</td>
+    </tr>
+  </table>
   <script src = "msTodo.js"></script>
 </body>
 </html>

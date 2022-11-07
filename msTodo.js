@@ -22,50 +22,52 @@ function todosMain () {
 
   //투두리스트 추가
   function addTodos() {
-    inputButton.addEventListener("click", onChange, false);
-  }
+    inputButton.addEventListener("click", addTodo, false);
+  }``
 
   //페이지 변화
-  function onChange(event) {
-    let flag = true;
-
+  function addTodo(event) {
     let inTOdoVal = inTodo.value;
     inTodo.value = "";
     let inCategoryVal = inCategory.value;
     inCategory.value = "";
 
-    let liList = document.createElement("li");
+    let todoTable = document.getElementById("todo-Table");
+    let trElem = document.createElement("tr");
+    todoTable.appendChild(trElem);
+
+    //checkedBox
     let checkedBoxTodo = document.createElement("input");
     checkedBoxTodo.type = "checkbox";
-    liList.appendChild(checkedBoxTodo); 
+    checkedBoxTodo.addEventListener("click", completeTodo, false);
+    let tdCheckBox = document.createElement("td");
+    tdCheckBox.appendChild(checkedBoxTodo);
+    trElem.appendChild(tdCheckBox);
 
-    let todoElem = document.createElement("span");
-    todoElem.innerHTML = inTOdoVal + " - " + inCategoryVal;
-    liList.appendChild(todoElem);
+    let tdTodoList = document.createElement("td");
+    tdTodoList.innerText = inTOdoVal;
+    trElem.appendChild(tdTodoList);
 
-    //제거 아이콘 span태그를 부모테그에 달기
+    let tdCategory = document.createElement("td");
+    tdCategory.innerText = inCategoryVal;
+    trElem.appendChild(tdCategory);
+
+    // //제거 아이콘 span태그를 부모테그에 달기
     let spanElem = document.createElement("span");
     spanElem.innerText = "close"
     spanElem.className = "material-symbols-sharp";
-
-    //제거 아이콘 span 태그를 누를경우 동작
+    // //제거 아이콘 span 태그를 누를경우 동작
     spanElem.addEventListener("click", deleteTodo, false);
+    let tdDelete = document.createElement("td");
+    tdDelete.appendChild(spanElem);
+    trElem.appendChild(tdDelete);
 
     function deleteTodo() {
-      liList.remove();
+      trElem.remove();
     }
-
-    liList.appendChild(spanElem);
-    ulList.appendChild(liList);
     
-    function onClick(){
-      if(flag){
-        this.classList.add("strike");
-        flag = !flag;
-      }else{
-        this.classList.remove("strike");
-        flag = !flag;
-      }
+    function completeTodo(){
+      trElem.classList.toggle("strike");
     }
   }
 
