@@ -1,7 +1,7 @@
 todosMain();
 
 function todosMain () {
-
+  const DEFAULT_OPTIONS = "All";
   //변수 선언
   let inTodo;
   let filterElem;
@@ -53,6 +53,9 @@ function todosMain () {
     tdCategory.innerText = inCategoryVal;
     trElem.appendChild(tdCategory);
 
+    
+    updateNewFilterCategorie();
+
     // //제거 아이콘 span태그를 부모테그에 달기
     let spanElem = document.createElement("span");
     spanElem.innerText = "close"
@@ -63,22 +66,26 @@ function todosMain () {
     tdDelete.appendChild(spanElem);
     trElem.appendChild(tdDelete);
 
+    //삭제
     function deleteTodo() {
       trElem.remove();
+      updateNewFilterCategorie();
     }
     
+    //완료 체크
     function completeTodo(){
       trElem.classList.toggle("strike");
     }
   }
 
+  //분류별 보이기
   function filterEntries() {
 
     let choice = filterElem.value;
     let rows = document.getElementsByTagName("tr");
     
-    if (choice == "all") {
-      Array.from(rows).forEach((row) => {
+    if (choice == DEFAULT_OPTIONS) {
+      Array.from(rows).forEach((row ) => {
         row.style.display = "";
       })
     }else {
@@ -94,6 +101,38 @@ function todosMain () {
         }
       });
     }
+  }
+  //분류 자동 업데이트
+  function updateNewFilterCategorie() {
+    let options = [];
+    let rows = document.getElementsByTagName("tr");
+    
+    Array.from(rows).forEach((row, index) => {
+      if (index == 0){
+        return;
+      }
+      let category = row.getElementsByTagName("td")[2].innerHTML;
+
+      options.push(category);
+      // if (!options.includes(category)){
+      // }
+    });
+
+    filterElem.innerHTML = DEFAULT_OPTIONS;
+    let newFilterCategorie = document.createElement('option');
+    newFilterCategorie.value = DEFAULT_OPTIONS;
+    newFilterCategorie.innerText = DEFAULT_OPTIONS;
+    filterElem.appendChild(newFilterCategorie);
+
+    let optionSet = new Set(options);
+    for (let option of optionSet){
+      //카테고리 리스트 자동 업데이트
+      let newFilterCategorie = document.createElement('option');
+      newFilterCategorie.value = option;
+      newFilterCategorie.innerText = option;
+      filterElem.appendChild(newFilterCategorie);
+    };
+
   }
 }
 
