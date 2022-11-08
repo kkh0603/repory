@@ -4,7 +4,7 @@ function todosMain () {
 
   //변수 선언
   let inTodo;
-  let ulList;
+  let filterElem;
   let inCategory;
   let inputButton;
 
@@ -17,13 +17,14 @@ function todosMain () {
     inTodo = document.getElementsByTagName("input")[0];
     inCategory = document.getElementsByTagName("input")[1];
     inputButton = document.getElementById("inputBtn");
-    ulList = document.getElementsByTagName("ul")[0];
+    filterElem = document.getElementById("todoFilter");
   }
 
   //투두리스트 추가
   function addTodos() {
     inputButton.addEventListener("click", addTodo, false);
-  }``
+    filterElem.addEventListener("change", filterEntries, false);
+  } 
 
   //페이지 변화
   function addTodo(event) {
@@ -71,5 +72,28 @@ function todosMain () {
     }
   }
 
+  function filterEntries() {
+
+    let choice = filterElem.value;
+    let rows = document.getElementsByTagName("tr");
+    
+    if (choice == "all") {
+      Array.from(rows).forEach((row) => {
+        row.style.display = "";
+      })
+    }else {
+      Array.from(rows).forEach((row, index) => {
+        if (index == 0){
+          return;
+        }
+        let category = row.getElementsByTagName("td")[2].innerHTML
+        if (category == filterElem.value) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+  }
 }
 

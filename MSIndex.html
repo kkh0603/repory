@@ -12,8 +12,8 @@
   <input type="text" placeholder="할 일을 입력해 주세요">
   <P><input type="text" placeholder="분류" list = "TodoDataList"></P>
   <datalist id = "TodoDataList">
-    <option value="Personal"></option>
-    <option value="Work"></option>
+    <option value="normal"></option>
+    <option value="important"></option>
   </datalist>
   <button id = "inputBtn">입력</button>
   <ul></ul>
@@ -21,7 +21,13 @@
     <tr>
       <td>Checkbox</td>
       <td>Todo</td>
-      <td>Category</td>
+      <td>
+        <select id="todoFilter">
+          <option value="all">전체</option>
+          <option value="normal">일반</option>
+          <option value="important">중요</option>
+        </select>
+      </td>
       <td>Delete</td>
     </tr>
   </table>
