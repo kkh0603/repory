@@ -1,16 +1,19 @@
 todosMain();
 
 function todosMain () {
-  const DEFAULT_OPTIONS = "All";
+  const DEFAULT_OPTIONS = "Choose category";
   //변수 선언
   let inTodo;
   let filterElem;
   let inCategory;
   let inputButton;
+  let todoList = [];
 
   //기능
   getTodos();
   addTodos();
+  load();
+  renderRows();
 
   //투두스트 가져오기
   function getTodos() {
@@ -33,6 +36,95 @@ function todosMain () {
     let inCategoryVal = inCategory.value;
     inCategory.value = "";
 
+    
+    rendowRow(inTOdoVal, inCategoryVal)
+    todoList.push({
+      todo : inTOdoVal,
+      category : inCategoryVal
+    });
+    save();
+    updateNewFilterCategorie();
+    
+  }
+
+  //분류별 보이기
+  function filterEntries() {
+
+    let choice = filterElem.value;
+    
+    if (choice == DEFAULT_OPTIONS) {
+
+      let rows = document.getElementsByTagName("tr");
+
+      Array.from(rows).forEach((row, index) => {
+        row.style.display = "";
+      });
+    }else {
+      let rows = document.getElementsByTagName("tr");
+
+      Array.from(rows).forEach((row, index) => {
+        if (index == 0){
+          return;
+        }
+        let category = row.getElementsByTagName("td")[2].innerText;
+        if (category == filterElem.value) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+  }
+  //분류 자동 업데이트
+  function updateNewFilterCategorie() {
+    let options = [];
+    let rows = document.getElementsByTagName("tr");
+    
+    Array.from(rows).forEach((row, index) => {
+      if (index == 0){
+        return;
+      }
+      let category = row.getElementsByTagName("td")[2].innerText;
+
+      options.push(category);
+      // if (!options.includes(category)){
+      // }
+    });
+
+    let optionSet = new Set(options);
+
+    filterElem.innerHTML = "";
+    let newFilterCategorie = document.createElement('option');
+    newFilterCategorie.value = DEFAULT_OPTIONS;
+    newFilterCategorie.innerText = DEFAULT_OPTIONS;
+    filterElem.appendChild(newFilterCategorie);
+
+    for (let option of optionSet){
+      //카테고리 리스트 자동 업데이트
+      let newFilterCategories = document.createElement('option');
+      newFilterCategories.value = option;
+      newFilterCategories.innerText = option;
+      filterElem.appendChild(newFilterCategories);
+    };
+  }
+  function save() {
+    let stringified = JSON.stringify(todoList);
+    localStorage.setItem("todoList", stringified);
+  }
+  function load() {
+    let retrieved = localStorage.getItem("todoList");
+    todoList = JSON.parse(retrieved);
+    if (todoList == null) {
+      todoList =[];
+    }
+  }
+  function renderRows() {
+    todoList.forEach(todo => {
+      rendowRow(todo, null);
+    })
+  }
+
+  function rendowRow(inTOdoVal, inCategoryVal) {
     let todoTable = document.getElementById("todo-Table");
     let trElem = document.createElement("tr");
     todoTable.appendChild(trElem);
@@ -52,10 +144,7 @@ function todosMain () {
     let tdCategory = document.createElement("td");
     tdCategory.innerText = inCategoryVal;
     trElem.appendChild(tdCategory);
-
     
-    updateNewFilterCategorie();
-
     // //제거 아이콘 span태그를 부모테그에 달기
     let spanElem = document.createElement("span");
     spanElem.innerText = "close"
@@ -65,7 +154,6 @@ function todosMain () {
     let tdDelete = document.createElement("td");
     tdDelete.appendChild(spanElem);
     trElem.appendChild(tdDelete);
-
     //삭제
     function deleteTodo() {
       trElem.remove();
@@ -76,63 +164,6 @@ function todosMain () {
     function completeTodo(){
       trElem.classList.toggle("strike");
     }
-  }
-
-  //분류별 보이기
-  function filterEntries() {
-
-    let choice = filterElem.value;
-    let rows = document.getElementsByTagName("tr");
-    
-    if (choice == DEFAULT_OPTIONS) {
-      Array.from(rows).forEach((row ) => {
-        row.style.display = "";
-      })
-    }else {
-      Array.from(rows).forEach((row, index) => {
-        if (index == 0){
-          return;
-        }
-        let category = row.getElementsByTagName("td")[2].innerHTML
-        if (category == filterElem.value) {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
-        }
-      });
-    }
-  }
-  //분류 자동 업데이트
-  function updateNewFilterCategorie() {
-    let options = [];
-    let rows = document.getElementsByTagName("tr");
-    
-    Array.from(rows).forEach((row, index) => {
-      if (index == 0){
-        return;
-      }
-      let category = row.getElementsByTagName("td")[2].innerHTML;
-
-      options.push(category);
-      // if (!options.includes(category)){
-      // }
-    });
-
-    filterElem.innerHTML = DEFAULT_OPTIONS;
-    let newFilterCategorie = document.createElement('option');
-    newFilterCategorie.value = DEFAULT_OPTIONS;
-    newFilterCategorie.innerText = DEFAULT_OPTIONS;
-    filterElem.appendChild(newFilterCategorie);
-
-    let optionSet = new Set(options);
-    for (let option of optionSet){
-      //카테고리 리스트 자동 업데이트
-      let newFilterCategorie = document.createElement('option');
-      newFilterCategorie.value = option;
-      newFilterCategorie.innerText = option;
-      filterElem.appendChild(newFilterCategorie);
-    };
-
   }
 }
 
