@@ -8,6 +8,8 @@ function todosMain () {
   let inCategory;
   let inputButton;
   let todoList = [];
+  let dateInput;
+  let timeInput;
 
   //기능
   getTodos();
@@ -21,6 +23,8 @@ function todosMain () {
     inCategory = document.getElementsByTagName("input")[1];
     inputButton = document.getElementById("inputBtn");
     filterElem = document.getElementById("todoFilter");
+    dateInput = document.getElementById("dateInput");
+    timeInput = document.getElementById("timeInput");
   }
 
   //투두리스트 추가
@@ -31,17 +35,26 @@ function todosMain () {
 
   //페이지 변화
   function addTodo(event) {
-    let inTOdoVal = inTodo.value;
+    let inTodoVal = inTodo.value;
     inTodo.value = "";
     let inCategoryVal = inCategory.value;
     inCategory.value = "";
+    let inDateVal = dateInput.value;
+    dateInput.value = "";
+    let inTimeVal = timeInput.value;
+    timeInput.value = "";
 
+    let obj = {
+      id : todoList.length,
+      todo : inTodoVal,
+      category : inCategoryVal,
+      date : inDateVal,
+      time : inTimeVal,
+      done : false,
+    };
     
-    rendowRow(inTOdoVal, inCategoryVal)
-    todoList.push({
-      todo : inTOdoVal,
-      category : inCategoryVal
-    });
+    rendowRow(obj)
+    todoList.push(obj);
     save();
     updateNewFilterCategorie();
     
@@ -119,12 +132,12 @@ function todosMain () {
     }
   }
   function renderRows() {
-    todoList.forEach(todo => {
-      rendowRow(todo, null);
+    todoList.forEach(todoObj => {
+      rendowRow(todoObj);
     })
   }
 
-  function rendowRow(inTOdoVal, inCategoryVal) {
+  function rendowRow({todo: inTodoVal, category: inCategoryVal, id, date, time,  done}) {
     let todoTable = document.getElementById("todo-Table");
     let trElem = document.createElement("tr");
     todoTable.appendChild(trElem);
@@ -133,14 +146,27 @@ function todosMain () {
     let checkedBoxTodo = document.createElement("input");
     checkedBoxTodo.type = "checkbox";
     checkedBoxTodo.addEventListener("click", completeTodo, false);
+    checkedBoxTodo.dataset.id = id;
     let tdCheckBox = document.createElement("td");
     tdCheckBox.appendChild(checkedBoxTodo);
     trElem.appendChild(tdCheckBox);
 
+    //날짜 리스트업
+    let tdDateList = document.createElement("td");
+    tdDateList.innerText = date;
+    trElem.appendChild(tdDateList);
+
+    //시간 리스트업
+    let tdTimeLiist = document.createElement("td");
+    tdTimeLiist.innerText = time;
+    trElem.appendChild(tdTimeLiist);
+
+    //할일 리스트업
     let tdTodoList = document.createElement("td");
-    tdTodoList.innerText = inTOdoVal;
+    tdTodoList.innerText = inTodoVal;
     trElem.appendChild(tdTodoList);
 
+    //카테고리 리스트럽
     let tdCategory = document.createElement("td");
     tdCategory.innerText = inCategoryVal;
     trElem.appendChild(tdCategory);
@@ -151,18 +177,42 @@ function todosMain () {
     spanElem.className = "material-symbols-sharp";
     // //제거 아이콘 span 태그를 누를경우 동작
     spanElem.addEventListener("click", deleteTodo, false);
+    spanElem.dataset.id = id;
     let tdDelete = document.createElement("td");
     tdDelete.appendChild(spanElem);
     trElem.appendChild(tdDelete);
+
+
+    checkedBoxTodo.type = "checkbox";
+    checkedBoxTodo.checked = done;
+    if (done){
+      trElem.classList.add("strike");
+    } else {
+      trElem.classList.remove("strike");
+    }
+
     //삭제
     function deleteTodo() {
       trElem.remove();
       updateNewFilterCategorie();
+
+      for (let i = 0; i < todoList.length; i++) {
+        if (todoList[i].id == this.dataset.id) {
+          todoList.splice(i, 1);
+        }
+      }
+      save();
     }
     
     //완료 체크
     function completeTodo(){
       trElem.classList.toggle("strike");
+      for (let i = 0; i < todoList.length; i++){
+        if(todoList[i].id == this.dataset.id){
+          todoList[i]["done"] = this.checked;
+        }
+      }
+      save();
     }
   }
 }

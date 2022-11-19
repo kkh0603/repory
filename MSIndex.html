@@ -9,25 +9,39 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
 </head>
 <body>
-  <input type="text" placeholder="할 일을 입력해 주세요">
-  <P><input type="text" placeholder="분류" list = "TodoDataList"></P>
-  <datalist id = "TodoDataList">
-    <option value="normal"></option>
-    <option value="important"></option>
-  </datalist>
-  <button id = "inputBtn">입력</button>
-  <ul></ul>
-  <table id = 'todo-Table'>
-    <tr>
-      <td>Checkbox</td>
-      <td>Todo</td>
-      <td>
-        <select id="todoFilter">
-        </select>
-      </td>
-      <td>Delete</td>
-    </tr>
-  </table>
+  <div>
+    <div class="todoInputContainer">
+    <input type="text" placeholder="할 일을 입력해 주세요">
+    <input type="text" placeholder="분류" list = "TodoDataList">
+    <button id = "inputBtn">입력</button>
+      <datalist id = "TodoDataList">
+        <option value="normal"></option>
+        <option value="important"></option>
+      </datalist>
+    </div>
+    <div class="dateInputContainer">
+      <input type="date" id="dateInput">
+      <input type="time" id="timeInput">
+    </div>
+  </div>
+  <div class="todoItemList">
+    <div>
+      <ul></ul>
+      <table id = 'todo-Table'>
+        <tr>
+          <td></td>
+          <td>Date</td>
+          <td>Time</td>
+          <td>Todo</td>
+          <td>
+            <select id="todoFilter">
+            </select>
+          </td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+  </div>
   <script src = "msTodo.js"></script>
 </body>
 </html>
