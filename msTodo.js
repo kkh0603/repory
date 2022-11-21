@@ -10,12 +10,14 @@ function todosMain () {
   let todoList = [];
   let dateInput;
   let timeInput;
+  let sortBtn;
 
   //기능
   getTodos();
   addTodos();
   load();
   renderRows();
+  updateNewFilterCategorie()
 
   //투두스트 가져오기
   function getTodos() {
@@ -25,12 +27,14 @@ function todosMain () {
     filterElem = document.getElementById("todoFilter");
     dateInput = document.getElementById("dateInput");
     timeInput = document.getElementById("timeInput");
+    sortBtn = document.getElementById("sortBtn");
   }
 
   //투두리스트 추가
   function addTodos() {
     inputButton.addEventListener("click", addTodo, false);
     filterElem.addEventListener("change", filterEntries, false);
+    sortBtn.addEventListener("click", sortDate, false);
   } 
 
   //페이지 변화
@@ -52,7 +56,6 @@ function todosMain () {
       time : inTimeVal,
       done : false,
     };
-    
     rendowRow(obj)
     todoList.push(obj);
     save();
@@ -62,46 +65,26 @@ function todosMain () {
 
   //분류별 보이기
   function filterEntries() {
-
     let choice = filterElem.value;
-    
+    let rows = document.getElementsByTagName("tr");
+    for(let i = rows.length-1; i > 0; i--) {
+      rows[i].remove();
+    }
     if (choice == DEFAULT_OPTIONS) {
-
-      let rows = document.getElementsByTagName("tr");
-
-      Array.from(rows).forEach((row, index) => {
-        row.style.display = "";
-      });
+      todoList.forEach(obj => rendowRow(obj));
     }else {
-      let rows = document.getElementsByTagName("tr");
-
-      Array.from(rows).forEach((row, index) => {
-        if (index == 0){
-          return;
-        }
-        let category = row.getElementsByTagName("td")[2].innerText;
-        if (category == filterElem.value) {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
+      todoList.forEach(obj => {
+        if (obj.category == choice){
+          rendowRow(obj);
         }
       });
     }
-  }
+  } 
   //분류 자동 업데이트
   function updateNewFilterCategorie() {
     let options = [];
-    let rows = document.getElementsByTagName("tr");
-    
-    Array.from(rows).forEach((row, index) => {
-      if (index == 0){
-        return;
-      }
-      let category = row.getElementsByTagName("td")[2].innerText;
-
-      options.push(category);
-      // if (!options.includes(category)){
-      // }
+    todoList.forEach((obj) => {
+      options.push(obj.category);
     });
 
     let optionSet = new Set(options);
@@ -136,7 +119,6 @@ function todosMain () {
       rendowRow(todoObj);
     })
   }
-
   function rendowRow({todo: inTodoVal, category: inCategoryVal, id, date, time,  done}) {
     let todoTable = document.getElementById("todo-Table");
     let trElem = document.createElement("tr");
@@ -153,7 +135,13 @@ function todosMain () {
 
     //날짜 리스트업
     let tdDateList = document.createElement("td");
-    tdDateList.innerText = date;
+    let dateObj = new Date(date);
+    let transDate = dateObj.toLocaleString("en-KR",{
+      month : "numeric",
+      day : "numeric",
+      //year : "numeric",
+    });
+    tdDateList.innerText = transDate;
     trElem.appendChild(tdDateList);
 
     //시간 리스트업
@@ -169,6 +157,7 @@ function todosMain () {
     //카테고리 리스트럽
     let tdCategory = document.createElement("td");
     tdCategory.innerText = inCategoryVal;
+    tdCategory.className = "category";
     trElem.appendChild(tdCategory);
     
     // //제거 아이콘 span태그를 부모테그에 달기
@@ -181,7 +170,6 @@ function todosMain () {
     let tdDelete = document.createElement("td");
     tdDelete.appendChild(spanElem);
     trElem.appendChild(tdDelete);
-
 
     checkedBoxTodo.type = "checkbox";
     checkedBoxTodo.checked = done;
@@ -214,6 +202,21 @@ function todosMain () {
       }
       save();
     }
+  }
+  //날짜 순으로 정리해주는 역활
+  function sortDate() {
+    todoList.sort((a,b) => {
+      let aDate = Date.parse(a.date);
+      let bDate = Date.parse(b.date);
+      return aDate-bDate
+    });
+
+    save();
+    let todoTable = document.getElementsByTagName("tr");
+    for(let i = todoTable.length - 1; i > 0; i--){
+      todoTable[i].remove();
+    }
+    renderRows();
   }
 }
 
