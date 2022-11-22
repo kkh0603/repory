@@ -118,6 +118,12 @@ function todosMain () {
     todoList.forEach(todoObj => {
       rendowRow(todoObj);
     })
+    drawCalandar(todoList.map(obj => {
+      return {
+        title: obj.todo,
+        start: obj.date,
+      }
+    }));
   }
   function rendowRow({todo: inTodoVal, category: inCategoryVal, id, date, time,  done}) {
     let todoTable = document.getElementById("todo-Table");
@@ -136,10 +142,10 @@ function todosMain () {
     //날짜 리스트업
     let tdDateList = document.createElement("td");
     let dateObj = new Date(date);
-    let transDate = dateObj.toLocaleString("en-KR",{
+    let transDate = dateObj.toLocaleString("en-GB",{
       month : "numeric",
       day : "numeric",
-      //year : "numeric",
+      year : "numeric",
     });
     tdDateList.innerText = transDate;
     trElem.appendChild(tdDateList);
@@ -220,3 +226,19 @@ function todosMain () {
   }
 }
 
+//캘린더
+function drawCalandar(data) {
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl,
+    {
+      initialView: 'dayGridMonth',
+      initialDate: '2022-11-7',
+      headerToolbar: {
+        left : 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth. timeGridWeek, timeGridDay'
+      },
+      events: data
+    });
+    calendar.render();
+}
