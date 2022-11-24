@@ -11,11 +11,13 @@ function todosMain () {
   let dateInput;
   let timeInput;
   let sortBtn;
+  let calendar;
 
   //기능
   getTodos();
   addTodos();
   load();
+  initCalendar();
   renderRows();
   updateNewFilterCategorie()
 
@@ -70,6 +72,9 @@ function todosMain () {
     for(let i = rows.length-1; i > 0; i--) {
       rows[i].remove();
     }
+
+    calendar.getEvents().forEach(event => event.remove());
+
     if (choice == DEFAULT_OPTIONS) {
       todoList.forEach(obj => rendowRow(obj));
     }else {
@@ -117,13 +122,7 @@ function todosMain () {
   function renderRows() {
     todoList.forEach(todoObj => {
       rendowRow(todoObj);
-    })
-    drawCalandar(todoList.map(obj => {
-      return {
-        title: obj.todo,
-        start: obj.date,
-      }
-    }));
+    });
   }
   function rendowRow({todo: inTodoVal, category: inCategoryVal, id, date, time,  done}) {
     let todoTable = document.getElementById("todo-Table");
@@ -142,10 +141,10 @@ function todosMain () {
     //날짜 리스트업
     let tdDateList = document.createElement("td");
     let dateObj = new Date(date);
-    let transDate = dateObj.toLocaleString("en-GB",{
+    let transDate = dateObj.toLocaleString("en-KR",{
       month : "numeric",
       day : "numeric",
-      year : "numeric",
+      //year : "numeric",
     });
     tdDateList.innerText = transDate;
     trElem.appendChild(tdDateList);
@@ -185,6 +184,13 @@ function todosMain () {
       trElem.classList.remove("strike");
     }
 
+    eventAddCalendar({
+      id : id,
+      title : inTodoVal,
+      start : date,
+    });
+
+
     //삭제
     function deleteTodo() {
       trElem.remove();
@@ -196,6 +202,7 @@ function todosMain () {
         }
       }
       save();
+      calendar.getEventById( this.dataset.id ).remove();
     }
     
     //완료 체크
@@ -224,21 +231,25 @@ function todosMain () {
     }
     renderRows();
   }
-}
 
-//캘린더
-function drawCalandar(data) {
-  var calendarEl = document.getElementById('calendar');
-  var calendar = new FullCalendar.Calendar(calendarEl,
-    {
+  // 켈린더 초기와
+  function initCalendar() {
+    let calendarEl = document.getElementById('calendar');
+    calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
-      initialDate: '2022-11-7',
+      initialDate: '2022-11-07',
       headerToolbar: {
-        left : 'prev,next today',
+        left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth. timeGridWeek, timeGridDay'
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
-      events: data
+      events: [],
     });
     calendar.render();
+  }
+
+  // 켈린더 일정 추가
+  function eventAddCalendar(event){
+    calendar.addEvent( event );
+  }
 }
