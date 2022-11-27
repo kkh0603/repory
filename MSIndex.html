@@ -11,45 +11,60 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
 </head>
 <body>
-  <body>
-    <div id = "todoBlock">
-      <div class="todoInputContainer">
-      <input type="text" placeholder="할 일을 입력해 주세요">
-      <input type="text" placeholder="분류" list = "TodoDataList">
-      <button id = "inputBtn">입력</button>
-        <datalist id = "TodoDataList">
-          <option value="normal"></option>
-          <option value="important"></option>
-        </datalist>
+  <header>
+    <h1>나의 일정 할일 관리표</h1>
+  </header>
+  <main>
+    <div class="TD">
+      <div id = "todoBlock">
+        <div class="todoInputContainer">
+          <span> 할일 : </span>
+          <input type="text" placeholder="할 일을 입력해 주세요">
+          <span> 분류 : </span>
+          <input type="text" placeholder="분류" list = "TodoDataList">
+        </div>
+        <div class="dateInputContainer">
+          <span> 날짜 : </span>
+          <input type="date" id="dateInput">
+          <span> 시간 : </span>
+          <input type="time" id="timeInput">
+        </div>
+        <div class="InputButtonCTN"> 
+          <span></span>
+          <button id = "inputBtn">입력</button>
+          <datalist id = "TodoDataList">
+            <option value="normal"></option>
+            <option value="important"></option>
+          </datalist>
+          <span></span>
+          <button id="sortBtn">정렬</button>
+        </div>
       </div>
-      <div class="dateInputContainer">
-        <input type="date" id="dateInput">
-        <input type="time" id="timeInput">
-        <button id="sortBtn">정렬</button>
+      <div class="todoItemList">
+        <div>
+          <ul></ul>
+          <table id = 'todo-Table'>
+            <tr>
+              <td></td>
+              <td>Date</td>
+              <td>Time</td>
+              <td>Todo</td>
+              <td>
+                <select id="todoFilter">
+                </select>
+              </td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
-    <div class="todoItemList">
-      <div>
-        <ul></ul>
-        <table id = 'todo-Table'>
-          <tr>
-            <td></td>
-            <td>Date</td>
-            <td>Time</td>
-            <td>Todo</td>
-            <td>
-              <select id="todoFilter">
-              </select>
-            </td>
-            <td></td>
-          </tr>
-        </table>
+    <div class="CLD">
+      <div id="calendarBlock">
+        <div id='calendar'></div>
       </div>
     </div>
-    <div id="calendarBlock">
-      <div id='calendar'></div>
-    </div>
-  </body>
+  </main>
   <script src = "msTodo.js"></script>
 </body>
 </html>

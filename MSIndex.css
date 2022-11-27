@@ -2,7 +2,98 @@
   text-decoration: line-through;
 }
 
+h1{
+  width: 300px;
+  margin: 10px auto;
+}
+
 td{
   border: 1px solid black;
   padding: 3px;
 }
+
+#todo-Table{
+  width: 100%;
+}
+
+::placeholder{
+  color:  rgb(231, 145, 91);
+}
+
+input{
+  color: rgb(231, 145, 91);
+}
+
+button{
+  background-color: white;
+  color: rgb(231, 145, 91);
+  border: 1px solid black;
+}
+
+body{
+  color: rgb(231, 145, 91);
+}
+
+.fc-button-group{
+  background-color: white;
+}
+
+#todoBlock{
+  padding: 10px;
+  border: 1px solid rgb(47, 185, 112);
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.todoItemList{
+  padding: 10px;
+  border: 1px solid rgb(47, 185, 112);
+  border-radius: 20px;
+}
+#calendarBlock{
+  padding: 10px;
+  border: 1px solid rgb(47, 185, 112);
+  border-radius: 20px;
+}
+@media screen and (min-width: 767px){
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+  }
+  
+  .todoInputContainer{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .dateInputContainer{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .InputButtonCTN{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 10px;
+  }
+  
+  div#calendarBlock{
+    position: sticky !important;
+    top: 0;
+  }
+
+}
+
+@media screen and (max-width: 767px){
+  
+  #todoItemList, #calendar {
+    margin-top: 10px;
+  }
+  
+}
+
+
