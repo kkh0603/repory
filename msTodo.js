@@ -12,6 +12,7 @@ function todosMain () {
   let timeInput;
   let sortBtn;
   let calendar;
+  let checkedItem;
 
   //기능
   getTodos();

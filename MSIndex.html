@@ -7,8 +7,11 @@
   <title>Master_Schedular</title>
   <link rel="stylesheet" href="MSIndex.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script> -->
+  <link rel="stylesheet" href="./node_modules/fullcalendar/main.min.css">
+  <script src="./node_modules/fullcalendar/main.min.js" defer></script>
+  <script src = "msTodo.js" defer></script>
 </head>
 <body>
   <header>
@@ -37,7 +40,11 @@
             <option value="important"></option>
           </datalist>
           <span></span>
-          <button id="sortBtn">정렬</button>
+          <button id="sortBtn">날짜 정렬</button>
+          <span></span>
+          <label for=""> 
+            <input type="checkbox" id="checkedItem">완료 숨김
+          </label>
         </div>
       </div>
       <div class="todoItemList">
@@ -65,6 +72,5 @@
       </div>
     </div>
   </main>
-  <script src = "msTodo.js"></script>
 </body>
 </html>

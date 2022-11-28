@@ -38,6 +38,10 @@ body{
   background-color: white;
 }
 
+#checkedItem {
+  accent-color: rgb(231, 145, 91);
+}
+
 #todoBlock{
   padding: 10px;
   border: 1px solid rgb(47, 185, 112);
