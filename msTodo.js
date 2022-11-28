@@ -19,7 +19,7 @@ function todosMain () {
   addTodos();
   load();
   initCalendar();
-  renderRows();
+  renderRows(todoList);
   updateNewFilterCategorie()
 
   //투두스트 가져오기
@@ -31,13 +31,18 @@ function todosMain () {
     dateInput = document.getElementById("dateInput");
     timeInput = document.getElementById("timeInput");
     sortBtn = document.getElementById("sortBtn");
+    checkedItem = document.getElementById("checkedItem");
   }
 
   //투두리스트 추가
   function addTodos() {
     inputButton.addEventListener("click", addTodo, false);
-    filterElem.addEventListener("change", filterEntries, false);
+    filterElem.addEventListener("change", multipleFilters, false);
     sortBtn.addEventListener("click", sortDate, false);
+    checkedItem.addEventListener("change", multipleFilters, false);
+    
+    document.getElementById("todo-Table").addEventListener("click",onTableClick, false);
+
   } 
 
   //페이지 변화
@@ -59,33 +64,13 @@ function todosMain () {
       time : inTimeVal,
       done : false,
     };
-    rendowRow(obj)
+    renderRow(obj)
     todoList.push(obj);
     save();
     updateNewFilterCategorie();
     
   }
 
-  //분류별 보이기
-  function filterEntries() {
-    let choice = filterElem.value;
-    let rows = document.getElementsByTagName("tr");
-    for(let i = rows.length-1; i > 0; i--) {
-      rows[i].remove();
-    }
-
-    calendar.getEvents().forEach(event => event.remove());
-
-    if (choice == DEFAULT_OPTIONS) {
-      todoList.forEach(obj => rendowRow(obj));
-    }else {
-      todoList.forEach(obj => {
-        if (obj.category == choice){
-          rendowRow(obj);
-        }
-      });
-    }
-  } 
   //분류 자동 업데이트
   function updateNewFilterCategorie() {
     let options = [];
@@ -120,12 +105,12 @@ function todosMain () {
       todoList =[];
     }
   }
-  function renderRows() {
-    todoList.forEach(todoObj => {
-      rendowRow(todoObj);
+  function renderRows(arr) {
+    arr.forEach(todoObj => {
+      renderRow(todoObj);
     });
   }
-  function rendowRow({todo: inTodoVal, category: inCategoryVal, id, date, time,  done}) {
+  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, time,  done}) {
     let todoTable = document.getElementById("todo-Table");
     let trElem = document.createElement("tr");
     todoTable.appendChild(trElem);
@@ -141,15 +126,11 @@ function todosMain () {
 
     //날짜 리스트업
     let tdDateList = document.createElement("td");
-    let dateObj = new Date(date);
-    let transDate = dateObj.toLocaleString("en-KR",{
-      month : "numeric",
-      day : "numeric",
-      //year : "numeric",
-    });
+    let transDate = formatDate(date);
+
     tdDateList.innerText = transDate;
     trElem.appendChild(tdDateList);
-
+    
     //시간 리스트업
     let tdTimeLiist = document.createElement("td");
     tdTimeLiist.innerText = time;
@@ -191,6 +172,23 @@ function todosMain () {
       start : date,
     });
 
+        //수정
+        tdDateList.dataset.editable = true;
+        tdTimeLiist.dataset.editable = true;
+        tdTodoList.dataset.editable = true;
+        tdCategory.dataset.editable = true;
+
+        tdDateList.dataset.type = 'date';
+        tdDateList.dataset.value = date;
+        tdTimeLiist.dataset.type = 'time';
+        tdTodoList.dataset.type = "todo"; 
+        tdCategory.dataset.type = "category";
+        
+        tdDateList.dataset.id = id;
+        tdTimeLiist.dataset.id = id;
+        tdTodoList.dataset.id = id;
+        tdCategory.dataset.id = id;   
+        //tdTodoList.addEventListener("dblclick", allowEdit, false); 
 
     //삭제
     function deleteTodo() {
@@ -216,6 +214,18 @@ function todosMain () {
       }
       save();
     }
+
+    function allowEdit(event){
+      let curText = event.target.innerText;
+      event.target.innerText = ""; 
+
+      let bufTextBox = document.createElement("input");
+      event.target.appendChild(bufTextBox);
+      bufTextBox.value = curText;
+
+      bufTextBox.addEventListener("change", onChange , false);
+    }
+
   }
   //날짜 순으로 정리해주는 역활
   function sortDate() {
@@ -226,11 +236,10 @@ function todosMain () {
     });
 
     save();
-    let todoTable = document.getElementsByTagName("tr");
-    for(let i = todoTable.length - 1; i > 0; i--){
-      todoTable[i].remove();
-    }
-    renderRows();
+    
+    cleantable();
+
+    renderRows(todoList);
   }
 
   // 켈린더 초기와
@@ -253,4 +262,102 @@ function todosMain () {
   function eventAddCalendar(event){
     calendar.addEvent( event );
   }
+
+  //확인완료 정리
+  function cleantable(){
+    let rows = document.getElementsByTagName("tr");
+    for(let i = rows.length-1; i > 0; i--) {
+      rows[i].remove();
+    }
+
+    calendar.getEvents().forEach(event => event.remove());
+  }
+
+  //체크박스 정렬 && 카테고리 정령
+  function multipleFilters() {
+    cleantable();
+
+    let choice = filterElem.value;
+    if (choice == DEFAULT_OPTIONS) {
+
+      if (checkedItem.checked){
+        let filterCompleteArr = todoList.filter(obj => obj.done == false);
+        renderRows(filterCompleteArr);
+  
+      }else{
+        renderRows(todoList);
+      }
+    }else {
+      let filterCategoryArr = todoList.filter(obj => obj.category==choice);
+      if (checkedItem.checked){
+        let filterCompleteArr = filterCategoryArr.filter(obj => obj.done == false);
+        renderRows(filterCompleteArr);
+  
+      }else{
+        renderRows(filterCategoryArr);
+      }
+    }
+  }
+
+  //항목 수정
+  function onTableClick(event){
+    if (event.target.matches("td") && event.target.dataset.editable == "true"){
+      let tempInputEl;
+      switch(event.target.dataset.type){
+        case "date":
+          tempInputEl = document.createElement("input");
+          tempInputEl.type = "date";
+          tempInputEl.value = event.target.dataset.value;;
+          break;
+        case "time":
+          tempInputEl = document.createElement("input");
+          tempInputEl.type = "time";
+          tempInputEl.value = event.target.innerText;
+          break;
+        case "todo":
+        case "category":
+          tempInputEl = document.createElement("input");
+          tempInputEl.value = event.target.innerText;
+          break;
+        default:
+      }
+      event.target.innerText = "";
+      event.target.appendChild(tempInputEl);
+      tempInputEl.addEventListener("change", onChange, false);
+    }
+    function onChange(event){
+      let changedValue = event.target.value;
+      let id = event.target.parentNode.dataset.id;
+
+      calendar.getEventById( id ).remove();
+
+      todoList.forEach(todoObj => {
+        if (todoObj.id == id){
+          todoObj[event.target.parentNode.dataset.type] = changedValue;
+          eventAddCalendar({
+            id : id,
+            title : todoObj.todo,
+            start : todoObj.date,
+          }); 
+        }
+      });
+      save();
+
+      event.target.parentNode.innerText=changedValue;
+      //이부분!!
+      if(event.target.parentNode.dataset.type == "date"){
+        event.target.parentNode.innerText = formatDate(date);
+      }
+    }
+  }
+  function formatDate (date) {
+    let dateObj = new Date(date);
+    let transDate = dateObj.toLocaleString("en-KR",{
+      month : "numeric",
+      day : "numeric",
+      //year : "numeric",
+    });
+    return transDate;
+  }
 }
+  
