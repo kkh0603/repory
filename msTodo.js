@@ -94,10 +94,12 @@ function todosMain () {
       filterElem.appendChild(newFilterCategories);
     };
   }
+  
   function save() {
     let stringified = JSON.stringify(todoList);
     localStorage.setItem("todoList", stringified);
   }
+
   function load() {
     let retrieved = localStorage.getItem("todoList");
     todoList = JSON.parse(retrieved);
@@ -105,11 +107,13 @@ function todosMain () {
       todoList =[];
     }
   }
+
   function renderRows(arr) {
     arr.forEach(todoObj => {
       renderRow(todoObj);
     });
   }
+
   function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, time,  done}) {
     let todoTable = document.getElementById("todo-Table");
     let trElem = document.createElement("tr");
@@ -215,10 +219,10 @@ function todosMain () {
     }
 
     function toEditItem(event){
-
     }
 
   }
+
   //날짜 순으로 정리해주는 역활
   function sortDate() {
     todoList.sort((a,b) => {
@@ -347,6 +351,8 @@ function todosMain () {
       }
     }
   }
+
+  //날짜 포멧
   function formatDate (date) {
     let dateObj = new Date(date);
     let transDate = dateObj.toLocaleString("en-KR",{

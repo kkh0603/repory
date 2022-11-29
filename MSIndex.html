@@ -27,6 +27,10 @@
           <input type="text" placeholder="할 일을 입력해 주세요">
           <span> 분류 : </span>
           <input type="text" placeholder="분류" list = "TodoDataList">
+          <datalist id = "TodoDataList">
+            <option value="normal"></option>
+            <option value="important"></option>
+          </datalist>
         </div>
         <div class="dateInputContainer">
           <span> 날짜 : </span>
@@ -36,13 +40,9 @@
         </div>
         <div class="InputButtonCTN"> 
           <span></span>
-          <button id = "inputBtn">입력</button>
-          <datalist id = "TodoDataList">
-            <option value="normal"></option>
-            <option value="important"></option>
-          </datalist>
+          <button id = "inputBtn" class="todoBtn">입력</button>
           <span></span>
-          <button id="sortBtn">날짜 정렬</button>
+          <button id="sortBtn" class="todoBtn">날짜 정렬</button>
           <span></span>
           <label for=""> 
             <input type="checkbox" id="checkedItem">완료 숨김
@@ -73,6 +73,34 @@
       <div id="calendarBlock">
         <div id='calendar'></div>
       </div>
+    </div>
+    <!-- 모달 창 -->
+    <div class="overlayModalBox" id="overlayModalBox">
+      <div class="todoModalBox" id="todoModalBox">
+        <div id = "todoBlock">
+          <div class="todoInputContainer">
+            <span> 할일 : </span>
+            <input type="text" placeholder="할 일을 입력해 주세요">
+            <span> 분류 : </span>
+            <input type="text" placeholder="분류" list = "TodoDataList">
+            <datalist id = "TodoDataList">
+              <option value="normal"></option>
+              <option value="important"></option>
+            </datalist>
+          </div>
+          <div class="dateInputContainer">
+            <span> 날짜 : </span>
+            <input type="date" id="dateInput">
+            <span> 시간 : </span>
+            <input type="time" id="timeInput">
+          </div>
+          <div class="InputButtonCTN"> 
+            <span></span>
+            <button id = "inputBtn" class="todoBtn">변경</button>
+          </div>
+        </div>
+      </div>
+      <div class="modalCloseBtn" id="modalCloseBtn">X</div>
     </div>
   </main>
 </body>
