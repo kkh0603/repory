@@ -7,10 +7,10 @@
   <title>Master_Schedular</title>
   <link rel="stylesheet" href="MSIndex.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script> -->
-  <link rel="stylesheet" href="./node_modules/fullcalendar/main.min.css">
-  <script src="./node_modules/fullcalendar/main.min.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <!-- <link rel="stylesheet" href="./node_modules/fullcalendar/main.min.css">
+  <script src="./node_modules/fullcalendar/main.min.js" defer></script> -->
   <script src = "msTodo.js" defer></script>
 </head>
 <body>
@@ -18,7 +18,9 @@
     <h1>나의 일정 할일 관리표</h1>
   </header>
   <main>
+    <!-- 왼쪽 프레임 -->
     <div class="TD">
+      <!-- 왼쪽 입력부 -->
       <div id = "todoBlock">
         <div class="todoInputContainer">
           <span> 할일 : </span>
@@ -47,9 +49,9 @@
           </label>
         </div>
       </div>
+      <!-- 왼쪽 리스업부 -->
       <div class="todoItemList">
-        <div>
-          <ul></ul>
+        <div id="tableItem">
           <table id = 'todo-Table'>
             <tr>
               <td></td>
@@ -66,6 +68,7 @@
         </div>
       </div>
     </div>
+    <!-- 오른쪽 프레임 -->
     <div class="CLD">
       <div id="calendarBlock">
         <div id='calendar'></div>

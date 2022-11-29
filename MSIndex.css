@@ -9,12 +9,39 @@ h1{
 }
 
 td{
-  border: 1px solid black;
-  padding: 3px;
+  border: 1px solid lightgrey;
+  padding: 0px;
+}
+
+#tableItem{
+  width: 100%;
+  height: 300px;
+  overflow: auto;
+}
+
+#tableItem table {
+  /* white-space: nowrap; */
+  border-collapse: collapse;
+}
+
+#tableItem::-webkit-scrollbar{
+  width: 5px;
+}
+
+#tableItem::-webkit-scrollbar-thumb {
+  background-color: #1E2B37;
+  border-radius: 10px;
+}
+
+#tableItem::-webkit-scrollbar-track {
+  background-color: #2C3E50;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px white;
 }
 
 #todo-Table{
   width: 100%;
+  border-spacing: 0px;
 }
 
 ::placeholder{
@@ -53,12 +80,34 @@ body{
   padding: 10px;
   border: 1px solid rgb(47, 185, 112);
   border-radius: 20px;
+  margin-bottom: 10px;
 }
 #calendarBlock{
   padding: 10px;
   border: 1px solid rgb(47, 185, 112);
   border-radius: 20px;
 }
+
+.todoInputContainer{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 10px;
+  margin-bottom: 10px;
+}
+
+.dateInputContainer{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 10px;
+  margin-bottom: 10px;
+}
+
+.InputButtonCTN{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 10px;
+}
+
 @media screen and (min-width: 767px){
   main {
     display: grid;
@@ -66,30 +115,10 @@ body{
     column-gap: 10px;
   }
   
-  .todoInputContainer{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    row-gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .dateInputContainer{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    row-gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .InputButtonCTN{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    row-gap: 10px;
-  }
-  
-  div#calendarBlock{
+  /* div#calendarBlock{
     position: sticky !important;
     top: 0;
-  }
+  } */
 
 }
 
@@ -98,7 +127,4 @@ body{
   #todoItemList, #calendar {
     margin-top: 10px;
   }
-  
 }
-
-

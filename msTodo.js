@@ -126,9 +126,8 @@ function todosMain () {
 
     //날짜 리스트업
     let tdDateList = document.createElement("td");
-    let transDate = formatDate(date);
-
-    tdDateList.innerText = transDate;
+    
+    tdDateList.innerText = formatDate(date);
     trElem.appendChild(tdDateList);
     
     //시간 리스트업
@@ -215,15 +214,8 @@ function todosMain () {
       save();
     }
 
-    function allowEdit(event){
-      let curText = event.target.innerText;
-      event.target.innerText = ""; 
+    function toEditItem(event){
 
-      let bufTextBox = document.createElement("input");
-      event.target.appendChild(bufTextBox);
-      bufTextBox.value = curText;
-
-      bufTextBox.addEventListener("change", onChange , false);
     }
 
   }
@@ -278,17 +270,19 @@ function todosMain () {
     cleantable();
 
     let choice = filterElem.value;
+
     if (choice == DEFAULT_OPTIONS) {
 
       if (checkedItem.checked){
         let filterCompleteArr = todoList.filter(obj => obj.done == false);
+
         renderRows(filterCompleteArr);
-  
       }else{
         renderRows(todoList);
       }
     }else {
       let filterCategoryArr = todoList.filter(obj => obj.category==choice);
+
       if (checkedItem.checked){
         let filterCompleteArr = filterCategoryArr.filter(obj => obj.done == false);
         renderRows(filterCompleteArr);
@@ -307,7 +301,7 @@ function todosMain () {
         case "date":
           tempInputEl = document.createElement("input");
           tempInputEl.type = "date";
-          tempInputEl.value = event.target.dataset.value;;
+          tempInputEl.value = event.target.dataset.value;
           break;
         case "time":
           tempInputEl = document.createElement("input");
@@ -325,15 +319,18 @@ function todosMain () {
       event.target.appendChild(tempInputEl);
       tempInputEl.addEventListener("change", onChange, false);
     }
+    
     function onChange(event){
       let changedValue = event.target.value;
       let id = event.target.parentNode.dataset.id;
+      let type = event.target.parentNode.dataset.type;
 
-      calendar.getEventById( id ).remove();
+      calendar.getEventById(id).remove();
 
       todoList.forEach(todoObj => {
         if (todoObj.id == id){
-          todoObj[event.target.parentNode.dataset.type] = changedValue;
+          todoObj[type] = changedValue;
+
           eventAddCalendar({
             id : id,
             title : todoObj.todo,
@@ -343,10 +340,10 @@ function todosMain () {
       });
       save();
 
-      event.target.parentNode.innerText=changedValue;
-      //이부분!!
-      if(event.target.parentNode.dataset.type == "date"){
-        event.target.parentNode.innerText = formatDate(date);
+      if(type == "date"){
+        event.target.parentNode.innerText = formatDate(changedValue);
+      }else{
+        event.target.parentNode.innerText = changedValue;
       }
     }
   }
@@ -360,4 +357,3 @@ function todosMain () {
     return transDate;
   }
 }
-  
