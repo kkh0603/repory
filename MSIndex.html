@@ -15,7 +15,12 @@
 </head>
 <body>
   <header>
-    <h1>나의 일정 할일 관리표</h1>
+    <h1> 
+      <div>Master Schedular</div>
+    </h1>
+    <h3>
+      <div>(todoList/Calendar)</div>
+    </h3>
   </header>
   <main>
     <!-- 왼쪽 프레임 -->
@@ -39,14 +44,13 @@
           <input type="time" id="timeInput">
         </div>
         <div class="InputButtonCTN"> 
-          <span></span>
+          <label for=""> 완료 숨김
+            <input type="checkbox" id="checkedItem">
+          </label>
           <button id = "inputBtn" class="todoBtn">입력</button>
           <span></span>
           <button id="sortBtn" class="todoBtn">날짜 정렬</button>
           <span></span>
-          <label for=""> 
-            <input type="checkbox" id="checkedItem">완료 숨김
-          </label>
         </div>
       </div>
       <!-- 왼쪽 리스업부 -->
@@ -62,6 +66,7 @@
                 <select id="todoFilter">
                 </select>
               </td>
+              <td></td>
               <td></td>
             </tr>
           </table>
@@ -80,9 +85,9 @@
         <div id = "todoBlock">
           <div class="todoInputContainer">
             <span> 할일 : </span>
-            <input type="text" placeholder="할 일을 입력해 주세요">
+            <input type="text" placeholder="할 일을 입력해 주세요" id="modalEditTodo">
             <span> 분류 : </span>
-            <input type="text" placeholder="분류" list = "TodoDataList">
+            <input type="text" placeholder="분류" list = "TodoDataList" id="modalEditCategory">
             <datalist id = "TodoDataList">
               <option value="normal"></option>
               <option value="important"></option>
@@ -90,13 +95,13 @@
           </div>
           <div class="dateInputContainer">
             <span> 날짜 : </span>
-            <input type="date" id="dateInput">
+            <input type="date" id="modalEditDate">
             <span> 시간 : </span>
-            <input type="time" id="timeInput">
+            <input type="time" id="modalEditTime">
           </div>
           <div class="InputButtonCTN"> 
             <span></span>
-            <button id = "inputBtn" class="todoBtn">변경</button>
+            <button id = "changeBtn">변경</button>
           </div>
         </div>
       </div>

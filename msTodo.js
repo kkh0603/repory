@@ -13,12 +13,14 @@ function todosMain () {
   let sortBtn;
   let calendar;
   let checkedItem;
+  let changeBtn;
+  let todoTable;
 
   //기능
   getTodos();
   addTodos();
-  load();
   initCalendar();
+  load();
   renderRows(todoList);
   updateNewFilterCategorie()
 
@@ -32,6 +34,8 @@ function todosMain () {
     timeInput = document.getElementById("timeInput");
     sortBtn = document.getElementById("sortBtn");
     checkedItem = document.getElementById("checkedItem");
+    changeBtn = document.getElementById("changeBtn");
+    todoTable = document.getElementById("todo-Table");
   }
 
   //투두리스트 추가
@@ -40,9 +44,10 @@ function todosMain () {
     filterElem.addEventListener("change", multipleFilters, false);
     sortBtn.addEventListener("click", sortDate, false);
     checkedItem.addEventListener("change", multipleFilters, false);
-    
-    document.getElementById("todo-Table").addEventListener("click",onTableClick, false);
 
+    document.getElementById("modalCloseBtn").addEventListener("click",closeModalBox, false);
+
+    changeBtn.addEventListener("click", commitEdit, false);
   } 
 
   //페이지 변화
@@ -94,7 +99,7 @@ function todosMain () {
       filterElem.appendChild(newFilterCategories);
     };
   }
-  
+
   function save() {
     let stringified = JSON.stringify(todoList);
     localStorage.setItem("todoList", stringified);
@@ -114,10 +119,10 @@ function todosMain () {
     });
   }
 
-  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, time,  done}) {
-    let todoTable = document.getElementById("todo-Table");
+  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, time, done}) {
+    let Table = document.getElementById("todo-Table");
     let trElem = document.createElement("tr");
-    todoTable.appendChild(trElem);
+    Table.appendChild(trElem);
 
     //checkedBox
     let checkedBoxTodo = document.createElement("input");
@@ -149,6 +154,16 @@ function todosMain () {
     tdCategory.innerText = inCategoryVal;
     tdCategory.className = "category";
     trElem.appendChild(tdCategory);
+
+    //애딧 셀
+    let editElem = document.createElement("span");
+    editElem.innerText = "edit"
+    editElem.className = "material-symbols-sharp";
+    editElem.addEventListener("click", toEditItem, false);
+    editElem.dataset.id = id;
+    let editTd = document.createElement("td");
+    editTd.appendChild(editElem);
+    trElem.appendChild(editTd);
     
     // //제거 아이콘 span태그를 부모테그에 달기
     let spanElem = document.createElement("span");
@@ -176,11 +191,6 @@ function todosMain () {
     });
 
         //수정
-        tdDateList.dataset.editable = true;
-        tdTimeLiist.dataset.editable = true;
-        tdTodoList.dataset.editable = true;
-        tdCategory.dataset.editable = true;
-
         tdDateList.dataset.type = 'date';
         tdDateList.dataset.value = date;
         tdTimeLiist.dataset.type = 'time';
@@ -219,6 +229,18 @@ function todosMain () {
     }
 
     function toEditItem(event){
+      showModalBox();
+
+      let id = event.target.dataset.id;
+      let result = todoList.find(todoObj => todoObj.id == id);
+      let {todo, category, date, time} = result;
+
+      document.getElementById("modalEditTodo").value = todo;
+      document.getElementById("modalEditCategory").value = category;
+      document.getElementById("modalEditDate").value = date;
+      document.getElementById("modalEditTime").value = time;
+      
+      changeBtn.dataset.id = id;
     }
 
   }
@@ -361,5 +383,69 @@ function todosMain () {
       //year : "numeric",
     });
     return transDate;
+  }
+
+  //모달 상자 보이기
+  function showModalBox(event){
+    document.getElementById("overlayModalBox").classList.add("overlayIntoView");
+  }
+
+  //모달 상자 닫기
+  function closeModalBox(event){
+    document.getElementById("overlayModalBox").classList.remove("overlayIntoView");
+  }
+
+  //수정 완료
+  function commitEdit(event){
+    closeModalBox();
+
+    let id = event.target.dataset.id;
+    let todo = document.getElementById("modalEditTodo").value;
+    let category = document.getElementById("modalEditCategory").value;
+    let date = document.getElementById("modalEditDate").value;
+    let time = document.getElementById("modalEditTime").value;
+    
+    calendar.getEventById(id).remove();
+
+    for (let i = 0; i < todoList.length; i++){
+      if(todoList[i].id == id){
+        todoList[i]={
+          id : id,
+          todo : todo,
+          category : category,
+          date : date,
+          time : time
+        };
+
+        eventAddCalendar({
+          id : id,
+          title : todoList[i].todo,
+          start : todoList[i].date,
+        }); 
+      }
+    }
+
+    save();
+
+    let tdItemList = todoTable.querySelectorAll("td");
+    for (let i = 0; i < tdItemList.length; i++){
+      if(tdItemList[i].dataset.id == id){
+        let type = tdItemList[i].dataset.type;
+        switch(type){
+          case "date" :
+            tdItemList[i].innerText = formatDate(date);
+            break;
+          case "time" :
+            tdItemList[i].innerText = time;
+            break;
+          case "todo" :
+            tdItemList[i].innerText = todo;
+            break;
+          case "category" :
+            tdItemList[i].innerText = category;
+            break;
+        }
+      }
+    }
   }
 }
