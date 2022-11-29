@@ -127,6 +127,7 @@ function todosMain () {
     //checkedBox
     let checkedBoxTodo = document.createElement("input");
     checkedBoxTodo.type = "checkbox";
+    checkedBoxTodo.className = "checkFc";
     checkedBoxTodo.addEventListener("click", completeTodo, false);
     checkedBoxTodo.dataset.id = id;
     let tdCheckBox = document.createElement("td");
@@ -159,6 +160,7 @@ function todosMain () {
     let editElem = document.createElement("span");
     editElem.innerText = "edit"
     editElem.className = "material-symbols-sharp";
+    editElem.className += " editFc"
     editElem.addEventListener("click", toEditItem, false);
     editElem.dataset.id = id;
     let editTd = document.createElement("td");
@@ -169,6 +171,7 @@ function todosMain () {
     let spanElem = document.createElement("span");
     spanElem.innerText = "close"
     spanElem.className = "material-symbols-sharp";
+    spanElem.className += " deleteFc"
     // //제거 아이콘 span 태그를 누를경우 동작
     spanElem.addEventListener("click", deleteTodo, false);
     spanElem.dataset.id = id;
@@ -190,18 +193,17 @@ function todosMain () {
       start : date,
     });
 
-        //수정
-        tdDateList.dataset.type = 'date';
-        tdDateList.dataset.value = date;
-        tdTimeLiist.dataset.type = 'time';
-        tdTodoList.dataset.type = "todo"; 
-        tdCategory.dataset.type = "category";
-        
-        tdDateList.dataset.id = id;
-        tdTimeLiist.dataset.id = id;
-        tdTodoList.dataset.id = id;
-        tdCategory.dataset.id = id;   
-        //tdTodoList.addEventListener("dblclick", allowEdit, false); 
+    //수정
+    tdDateList.dataset.type = 'date';
+    tdDateList.dataset.value = date;
+    tdTimeLiist.dataset.type = 'time';
+    tdTodoList.dataset.type = "todo"; 
+    tdCategory.dataset.type = "category";
+    
+    tdDateList.dataset.id = id;
+    tdTimeLiist.dataset.id = id;
+    tdTodoList.dataset.id = id;
+    tdCategory.dataset.id = id;   
 
     //삭제
     function deleteTodo() {
@@ -226,21 +228,6 @@ function todosMain () {
         }
       }
       save();
-    }
-
-    function toEditItem(event){
-      showModalBox();
-
-      let id = event.target.dataset.id;
-      let result = todoList.find(todoObj => todoObj.id == id);
-      let {todo, category, date, time} = result;
-
-      document.getElementById("modalEditTodo").value = todo;
-      document.getElementById("modalEditCategory").value = category;
-      document.getElementById("modalEditDate").value = date;
-      document.getElementById("modalEditTime").value = time;
-      
-      changeBtn.dataset.id = id;
     }
 
   }
@@ -272,6 +259,11 @@ function todosMain () {
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
       events: [],
+      eventClick: function(info) {
+        toEditItem(info.event);
+      },
+      eventBackgroundColor : "#2C3E50",
+      eventBorderColor : "#1E2B37",
     });
     calendar.render();
   }
@@ -448,4 +440,33 @@ function todosMain () {
       }
     }
   }
+
+  //항목 수정
+  function toEditItem(event){
+    showModalBox();
+
+    let id;
+
+    if (event.target){
+      id = event.target.dataset.id;
+    } else {
+      id = event.id;
+    }
+
+    preFillEditForm(id);
+
+  }
+ 
+  //수정창 값 채우기
+  function preFillEditForm(id){
+    let result = todoList.find(todoObj => todoObj.id == id);
+    let {todo, category, date, time} = result;
+
+    document.getElementById("modalEditTodo").value = todo;
+    document.getElementById("modalEditCategory").value = category;
+    document.getElementById("modalEditDate").value = date;
+    document.getElementById("modalEditTime").value = time;
+    changeBtn.dataset.id = id;
+  }
+
 }
