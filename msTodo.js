@@ -15,6 +15,7 @@ function todosMain () {
   let checkedItem;
   let changeBtn;
   let todoTable;
+  let dragItem;
 
   //기능
   getTodos();
@@ -48,6 +49,10 @@ function todosMain () {
     document.getElementById("modalCloseBtn").addEventListener("click",closeModalBox, false);
 
     changeBtn.addEventListener("click", commitEdit, false);
+
+    todoTable.addEventListener("dragstart", onDragStart, false);
+    todoTable.addEventListener("drop", onDrop, false);
+    todoTable.addEventListener("dragover", onDragOver, false);
   } 
 
   //페이지 변화
@@ -120,9 +125,11 @@ function todosMain () {
   }
 
   function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, time, done}) {
-    let Table = document.getElementById("todo-Table");
+    let table = document.getElementById("todo-Table");
     let trElem = document.createElement("tr");
-    Table.appendChild(trElem);
+    table.appendChild(trElem);
+    trElem.draggable = "true";
+    trElem.dataset.id = id;
 
     //checkedBox
     let checkedBoxTodo = document.createElement("input");
@@ -264,6 +271,10 @@ function todosMain () {
       },
       eventBackgroundColor : "#2C3E50",
       eventBorderColor : "#1E2B37",
+      editable: true,
+      eventDrop: function(info) {
+        calendarEventDragged(info.event);
+      } 
     });
     calendar.render();
   }
@@ -419,24 +430,22 @@ function todosMain () {
 
     save();
 
-    let tdItemList = todoTable.querySelectorAll("td");
+    let tdItemList = todoTable.querySelectorAll(`td[data-id='${id}']`);
     for (let i = 0; i < tdItemList.length; i++){
-      if(tdItemList[i].dataset.id == id){
-        let type = tdItemList[i].dataset.type;
-        switch(type){
-          case "date" :
-            tdItemList[i].innerText = formatDate(date);
-            break;
-          case "time" :
-            tdItemList[i].innerText = time;
-            break;
-          case "todo" :
-            tdItemList[i].innerText = todo;
-            break;
-          case "category" :
-            tdItemList[i].innerText = category;
-            break;
-        }
+      let type = tdItemList[i].dataset.type;
+      switch(type){
+        case "date" :
+          tdItemList[i].innerText = formatDate(date);
+          break;
+        case "time" :
+          tdItemList[i].innerText = time;
+          break;
+        case "todo" :
+          tdItemList[i].innerText = todo;
+          break;
+        case "category" :
+          tdItemList[i].innerText = category;
+          break;
       }
     }
   }
@@ -456,7 +465,7 @@ function todosMain () {
     preFillEditForm(id);
 
   }
- 
+
   //수정창 값 채우기
   function preFillEditForm(id){
     let result = todoList.find(todoObj => todoObj.id == id);
@@ -467,6 +476,84 @@ function todosMain () {
     document.getElementById("modalEditDate").value = date;
     document.getElementById("modalEditTime").value = time;
     changeBtn.dataset.id = id;
+  }
+
+  //항목 드레그
+  function onDragStart (event) {
+    dragItem = event.target;
+  }
+
+  //드래그 드랍
+  function onDrop (event) {
+    if(event.target.matches("table")){
+      return;
+    }
+
+    let preTarget = event.target;
+
+    while(!preTarget.matches("tr")){
+      preTarget = preTarget.parentNode;
+    }
+
+    if(preTarget.matches(":first-child")){
+      return;
+    }
+
+    todoTable.insertBefore(dragItem, preTarget);
+
+    let bufIndex;
+  
+    todoList.forEach((todoObj, index) => {
+      if (todoObj.id == dragItem.dataset.id){
+        bufIndex = index;
+      }
+    });
+  
+    let [toInsertObj] = todoList.splice(bufIndex, 1);
+  
+    todoList.forEach((todoObj, index) => {
+      if (todoObj.id == preTarget.dataset.id){
+        bufIndex = index;
+      }
+    });
+  
+    todoList.splice(bufIndex, 0 ,toInsertObj);
+  
+    save();
+  }
+  
+  function onDragOver(event){
+    event.preventDefault();
+  }
+
+  function calendarEventDragged(event){
+    let id = event.id;
+    let dateObj = new Date(event.start);
+    let year = dateObj.getFullYear();
+    let month = dateObj.getMonth() + 1;
+    let date = dateObj.getDate();
+
+    let paddedMonth = month.toString();
+    if (paddedMonth.length < 2){
+      paddedMonth = "0" + paddedMonth;
+    }
+
+    let paddedDate = date.toString();
+    if (paddedDate.length < 2){
+      paddedDate = "0" + paddedDate;
+    }
+
+    let toStoreDate = `${year}-${paddedMonth}-${paddedDate}`;
+
+    todoList.forEach(todoObj => {
+      if(todoObj.id == id){
+        todoObj.date = toStoreDate;
+      }
+    });
+
+    save();
+
+    multipleFilters();
   }
 
 }
