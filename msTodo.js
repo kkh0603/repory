@@ -16,6 +16,7 @@ function todosMain () {
   let changeBtn;
   let todoTable;
   let dragItem;
+  let modalCloseBtn;
 
   //기능
   getTodos();
@@ -37,6 +38,7 @@ function todosMain () {
     checkedItem = document.getElementById("checkedItem");
     changeBtn = document.getElementById("changeBtn");
     todoTable = document.getElementById("todo-Table");
+    modalCloseBtn = document.getElementById("modalCloseBtn");
   }
 
   //투두리스트 추가
@@ -45,17 +47,14 @@ function todosMain () {
     filterElem.addEventListener("change", multipleFilters, false);
     sortBtn.addEventListener("click", sortDate, false);
     checkedItem.addEventListener("change", multipleFilters, false);
-
-    document.getElementById("modalCloseBtn").addEventListener("click",closeModalBox, false);
-
+    modalCloseBtn.addEventListener("click",closeModalBox, false);
     changeBtn.addEventListener("click", commitEdit, false);
-
     todoTable.addEventListener("dragstart", onDragStart, false);
     todoTable.addEventListener("drop", onDrop, false);
     todoTable.addEventListener("dragover", onDragOver, false);
   } 
 
-  //페이지 변화
+  //추가
   function addTodo(event) {
     let inTodoVal = inTodo.value;
     inTodo.value = "";
@@ -67,7 +66,7 @@ function todosMain () {
     timeInput.value = "";
 
     let obj = {
-      id : todoList.length,
+      id :  _uuid(),
       todo : inTodoVal,
       category : inCategoryVal,
       date : inDateVal,
@@ -78,7 +77,7 @@ function todosMain () {
     todoList.push(obj);
     save();
     updateNewFilterCategorie();
-    
+    eventAddCalendar(obj);
   }
 
   //분류 자동 업데이트
@@ -89,15 +88,14 @@ function todosMain () {
     });
 
     let optionSet = new Set(options);
-
     filterElem.innerHTML = "";
+    
     let newFilterCategorie = document.createElement('option');
     newFilterCategorie.value = DEFAULT_OPTIONS;
     newFilterCategorie.innerText = DEFAULT_OPTIONS;
     filterElem.appendChild(newFilterCategorie);
 
     for (let option of optionSet){
-      //카테고리 리스트 자동 업데이트
       let newFilterCategories = document.createElement('option');
       newFilterCategories.value = option;
       newFilterCategories.innerText = option;
@@ -119,15 +117,15 @@ function todosMain () {
   }
 
   function renderRows(arr) {
-    arr.forEach(todoObj => {
+    arr.forEach(eventAddCalendar);
+    arr.forEach((todoObj) => {
       renderRow(todoObj);
     });
   }
 
   function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, time, done}) {
-    let table = document.getElementById("todo-Table");
     let trElem = document.createElement("tr");
-    table.appendChild(trElem);
+    todoTable.appendChild(trElem);
     trElem.draggable = "true";
     trElem.dataset.id = id;
 
@@ -143,8 +141,7 @@ function todosMain () {
 
     //날짜 리스트업
     let tdDateList = document.createElement("td");
-    
-    tdDateList.innerText = formatDate(date);
+    tdDateList.innerText = date;
     trElem.appendChild(tdDateList);
     
     //시간 리스트업
@@ -157,7 +154,7 @@ function todosMain () {
     tdTodoList.innerText = inTodoVal;
     trElem.appendChild(tdTodoList);
 
-    //카테고리 리스트럽
+    //카테고리 리스트업
     let tdCategory = document.createElement("td");
     tdCategory.innerText = inCategoryVal;
     tdCategory.className = "category";
@@ -194,15 +191,8 @@ function todosMain () {
       trElem.classList.remove("strike");
     }
 
-    eventAddCalendar({
-      id : id,
-      title : inTodoVal,
-      start : date,
-    });
-
     //수정
-    tdDateList.dataset.type = 'date';
-    tdDateList.dataset.value = date;
+    tdDateList.dataset.type = 'date'; 
     tdTimeLiist.dataset.type = 'time';
     tdTodoList.dataset.type = "todo"; 
     tdCategory.dataset.type = "category";
@@ -223,7 +213,11 @@ function todosMain () {
         }
       }
       save();
-      calendar.getEventById( this.dataset.id ).remove();
+
+      let calendarEvent =  calendar.getEventById( this.dataset.id );
+      if(calendarEvent !== null) {
+        calendarEvent.remove();
+      }
     }
     
     //완료 체크
@@ -235,8 +229,21 @@ function todosMain () {
         }
       }
       save();
+      multipleFilters();
     }
 
+  }
+
+  function _uuid() {
+    var d = Date.now();
+    if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+      d += performance.now(); //use high-precision timer if available
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
   }
 
   //날짜 순으로 정리해주는 역활
@@ -254,12 +261,13 @@ function todosMain () {
     renderRows(todoList);
   }
 
-  // 켈린더 초기와
+  // 켈린더 초기화
   function initCalendar() {
     let calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
-      initialDate: '2022-11-07',
+      height: 650,
+      initialDate: new Date(),
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
@@ -274,19 +282,30 @@ function todosMain () {
       editable: true,
       eventDrop: function(info) {
         calendarEventDragged(info.event);
-      } 
+      },
+      eventTimeFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        omitZeroMinute: false,
+        hour12: false
+      }
     });
     calendar.render();
   }
 
   // 켈린더 일정 추가
-  function eventAddCalendar(event){
-    calendar.addEvent( event );
+  function eventAddCalendar({id, todo, date, time, done}){
+    calendar.addEvent({
+      id: id,
+      title: todo,
+      start: time === "" ? date : `${date}T${time}`,
+      backgroundColor : (done ? "green" : "#a11e12"),
+    });
   }
 
   //확인완료 정리
   function cleantable(){
-    let rows = document.getElementsByTagName("tr");
+    let rows = todoTable.getElementsByTagName("tr");
     for(let i = rows.length-1; i > 0; i--) {
       rows[i].remove();
     }
@@ -299,23 +318,22 @@ function todosMain () {
     cleantable();
 
     let choice = filterElem.value;
-
     if (choice == DEFAULT_OPTIONS) {
-
       if (checkedItem.checked){
+        let resultArr = [];
         let filterCompleteArr = todoList.filter(obj => obj.done == false);
-
-        renderRows(filterCompleteArr);
+        resultArr = [...filterCompleteArr]
+        renderRows(resultArr);
       }else{
         renderRows(todoList);
       }
     }else {
       let filterCategoryArr = todoList.filter(obj => obj.category==choice);
-
       if (checkedItem.checked){
+        let resultArr = [];
         let filterCompleteArr = filterCategoryArr.filter(obj => obj.done == false);
-        renderRows(filterCompleteArr);
-  
+        resultArr = [...filterCompleteArr]
+        renderRows(resultArr);
       }else{
         renderRows(filterCategoryArr);
       }
@@ -417,14 +435,11 @@ function todosMain () {
           todo : todo,
           category : category,
           date : date,
-          time : time
+          time : time,
+          done : false,
         };
 
-        eventAddCalendar({
-          id : id,
-          title : todoList[i].todo,
-          start : todoList[i].date,
-        }); 
+        eventAddCalendar(todoList[i]); 
       }
     }
 
@@ -532,8 +547,10 @@ function todosMain () {
     let year = dateObj.getFullYear();
     let month = dateObj.getMonth() + 1;
     let date = dateObj.getDate();
-
+    let hour = dateObj.getHours();
+    let minute = dateObj.getMinutes();
     let paddedMonth = month.toString();
+
     if (paddedMonth.length < 2){
       paddedMonth = "0" + paddedMonth;
     }
@@ -548,6 +565,8 @@ function todosMain () {
     todoList.forEach(todoObj => {
       if(todoObj.id == id){
         todoObj.date = toStoreDate;
+        if(hour !== 0)
+          todoObj.time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
       }
     });
 

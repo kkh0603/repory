@@ -93,7 +93,10 @@ td{
 #todo-Table{
   width: 100%;
   border-spacing: 0px;
+  font-size: 11px;
 }
+
+
 
 ::placeholder{
   color:  rgb(231, 145, 91);
@@ -117,6 +120,10 @@ input{
 
 .todoBtn:hover{
   background-color: #1E2B37;
+}
+
+.fc table td{
+  font-size: 11px;
 }
 
 body{
@@ -176,7 +183,7 @@ body{
 @media screen and (min-width: 767px){
   main {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 3fr;
     column-gap: 10px;
   }
 }
