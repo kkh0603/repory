@@ -20,26 +20,34 @@ td{
 }
 
 .editFc{
-  color: #2C3E50;
+  color: white;
   justify-content: center;
   align-items: center;
+  background-color: #2C3E50;
+  border-radius: 5px;
+  position: relative;
+  top: 1px;
 }
 
 .editFc:hover{
-  color: #1E2B37;
-  transform: scale(1.4);
+  color: white;
+  background-color: #1e1e1e;
   transition: 0.3s;
 }
 
 .deleteFc{
-  color: #2C3E50;
+  color: white;
   justify-content: center;
   align-items: center;
+  background-color: #2C3E50;
+  border-radius: 5px;
+  position: relative;
+  top: 1px;
 }
 
 .deleteFc:hover{
   color: #1E2B37;
-  transform: scale(1.4);
+  background-color: #1e1e1e;
   transition: 0.5s;
 }
 
@@ -220,7 +228,9 @@ label {
 }
 .fc-toolbar-title{
   float: left !important;
-  font-size: 13px;
+  font-size: 20px !important;
+  position: relative !important;
+  margin-top: 5px !important;
 }
 
 .fc-prev-button:hover{
@@ -233,6 +243,28 @@ label {
   color: #a8a8a8 !important;
   transform: scale(1.4);
   transition: 0.3s;
+}
+
+.fc-dayGridMonth-button{
+  width: 60px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  margin-right: 10px !important;
+  border-radius: 20px !important;
+}
+.fc-timeGridWeek-button{
+  width: 60px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  margin-right: 10px !important;
+  border-radius: 20px !important;
+}
+.fc-timeGridDay-button{
+  width: 60px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  margin-right: 10px !important;
+  border-radius: 20px !important;
 }
 
 @media screen and (min-width: 767px){
