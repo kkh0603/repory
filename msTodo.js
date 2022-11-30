@@ -266,7 +266,7 @@ function todosMain () {
     let calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
-      height: 650,
+      height: 580,
       initialDate: new Date(),
       headerToolbar: {
         left: 'prev,next today',
@@ -299,7 +299,7 @@ function todosMain () {
       id: id,
       title: todo,
       start: time === "" ? date : `${date}T${time}`,
-      backgroundColor : (done ? "green" : "#a11e12"),
+      backgroundColor : (done ? "green" : "#2C3E50"),
     });
   }
 
