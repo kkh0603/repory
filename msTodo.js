@@ -266,11 +266,15 @@ function todosMain () {
     let calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
-      height: 580,
+      height: 560,
       initialDate: new Date(),
       headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
+        left: 'prev title next',
+        // left: 'prev today',
+        center: '',
+        // right: ''
+        // center: 'title',
+        // right: 'next'
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
       events: [],
