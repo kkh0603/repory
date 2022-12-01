@@ -40,11 +40,15 @@
         <div class="dateInputContainer">
           <span> 날짜 : </span>
           <input type="date" id="dateInput">
+          <span> 종료날짜 : </span>
+          <input type="date" id="endDateInput">
           <span> 시간 : </span>
           <input type="time" id="timeInput">
         </div>
         <div class="InputButtonCTN"> 
-          <span></span>
+          <label for=""> 긴 일정
+            <input type="checkbox" id="longSchedul">
+          </label>
           <button id = "inputBtn" class="todoBtn">입력</button>
           <label for=""> 완료 숨김
             <input type="checkbox" id="checkedItem">
@@ -59,7 +63,8 @@
           <table id = 'todo-Table'>
             <tr>
               <td></td>
-              <td>Date</td>
+              <td>Start Date</td>
+              <td>End Date</td>
               <td>Time</td>
               <td>Todo</td>
               <td>
@@ -96,6 +101,8 @@
           <div class="dateInputContainer">
             <span> 날짜 : </span>
             <input type="date" id="modalEditDate">
+            <span> 종료날짜 : </span>
+            <input type="date" id="modalEditEndDate">
             <span> 시간 : </span>
             <input type="time" id="modalEditTime">
           </div>

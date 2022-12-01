@@ -85,6 +85,26 @@ td{
   width: 5px;
 }
 
+.fc-day-sat .fc-col-header-cell-cushion {
+  color: blue;
+  text-decoration: none;
+}
+
+.fc-day-sat .fc-daygrid-day-top {
+  color: blue;
+  text-decoration: none;
+}
+
+.fc-day-sun .fc-col-header-cell-cushion {
+  color: red;
+  text-decoration: none;
+}
+
+.fc-day-sun .fc-daygrid-day-top {
+  color: red;
+  text-decoration: none;
+}
+
 /* Track */
 .fc-scroller::-webkit-scrollbar-track {
   background-color: #2C3E50;
@@ -231,18 +251,16 @@ label {
   font-size: 20px !important;
   position: relative !important;
   margin-top: 5px !important;
+  width: 170px !important;
+  text-align: center !important;
 }
 
 .fc-prev-button:hover{
   color: #a8a8a8 !important;
-  transform: scale(1.4);
-  transition: 0.3s;
 }
 
 .fc-next-button:hover {
   color: #a8a8a8 !important;
-  transform: scale(1.4);
-  transition: 0.3s;
 }
 
 .fc-dayGridMonth-button{
@@ -301,8 +319,9 @@ label {
 }
 
 .todoModalBox{
-  width: 50%;
+  width: 500px;
   height: 170px;
+  padding-bottom: 45px;
   border-radius: 20px;
   background-color: rgb(255, 255, 255);
   min-width: 375px;
@@ -312,7 +331,7 @@ label {
   /* background-color: #1E2B37; */
   color: white;
   position: relative;
-  top: -100px;
+  top: -120px;
   left: -27px;
   width: 25px;
   height: 25px;

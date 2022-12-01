@@ -17,6 +17,7 @@ function todosMain () {
   let todoTable;
   let dragItem;
   let modalCloseBtn;
+  let endDateInput;
 
   //기능
   getTodos();
@@ -39,6 +40,7 @@ function todosMain () {
     changeBtn = document.getElementById("changeBtn");
     todoTable = document.getElementById("todo-Table");
     modalCloseBtn = document.getElementById("modalCloseBtn");
+    endDateInput = document.getElementById("endDateInput");
   }
 
   //투두리스트 추가
@@ -64,12 +66,37 @@ function todosMain () {
     dateInput.value = "";
     let inTimeVal = timeInput.value;
     timeInput.value = "";
+    let endDateInputVal = endDateInput.value;
+    endDateInput.value = "";
+    let dateTemp = new Date(endDateInputVal);
+    let yearTemp = dateTemp.getFullYear();
+    let monthTemp = dateTemp.getMonth() + 1;
+    let dayTemp = dateTemp.getDate()+1;
+
+    let paddedMonthTmp = monthTemp.toString();
+    if (paddedMonthTmp.length < 2){
+      paddedMonthTmp = "0" + paddedMonthTmp;
+    }
+    let paddedDateTmp = dayTemp.toString();
+    if (paddedDateTmp.length < 2){
+      paddedDateTmp = "0" + paddedDateTmp;
+    }
+    
+    let packingEndDate = `${yearTemp}-${paddedMonthTmp}-${paddedDateTmp}`
+    let inEndDateVal;
+    if (packingEndDate != "NaN-NaN-NaN"){
+      inEndDateVal = packingEndDate;
+    }else{
+      inEndDateVal = "";
+    }
+    
 
     let obj = {
       id :  _uuid(),
       todo : inTodoVal,
       category : inCategoryVal,
       date : inDateVal,
+      endDate : inEndDateVal,
       time : inTimeVal,
       done : false,
     };
@@ -79,6 +106,8 @@ function todosMain () {
     updateNewFilterCategorie();
     eventAddCalendar(obj);
   }
+
+
 
   //분류 자동 업데이트
   function updateNewFilterCategorie() {
@@ -123,7 +152,7 @@ function todosMain () {
     });
   }
 
-  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, time, done}) {
+  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, endDate, time, done}) {
     let trElem = document.createElement("tr");
     todoTable.appendChild(trElem);
     trElem.draggable = "true";
@@ -143,6 +172,11 @@ function todosMain () {
     let tdDateList = document.createElement("td");
     tdDateList.innerText = date;
     trElem.appendChild(tdDateList);
+
+    //종료날짜 리스트업
+    let tdEndDateList = document.createElement("td");
+    tdEndDateList.innerText = endDate;
+    trElem.appendChild(tdEndDateList);
     
     //시간 리스트업
     let tdTimeLiist = document.createElement("td");
@@ -193,11 +227,13 @@ function todosMain () {
 
     //수정
     tdDateList.dataset.type = 'date'; 
+    tdEndDateList.dataset.type = 'endDate';
     tdTimeLiist.dataset.type = 'time';
     tdTodoList.dataset.type = "todo"; 
     tdCategory.dataset.type = "category";
     
     tdDateList.dataset.id = id;
+    tdEndDateList.dataset.id = id;
     tdTimeLiist.dataset.id = id;
     tdTodoList.dataset.id = id;
     tdCategory.dataset.id = id;   
@@ -231,7 +267,6 @@ function todosMain () {
       save();
       multipleFilters();
     }
-
   }
 
   function _uuid() {
@@ -298,13 +333,16 @@ function todosMain () {
   }
 
   // 켈린더 일정 추가
-  function eventAddCalendar({id, todo, date, time, done}){
-    calendar.addEvent({
-      id: id,
-      title: todo,
-      start: time === "" ? date : `${date}T${time}`,
-      backgroundColor : (done ? "green" : "#2C3E50"),
-    });
+  function eventAddCalendar({id, todo, date, endDate, time, done}){
+    if (!done){
+      calendar.addEvent({
+        id: id,
+        title: todo,
+        start: time === "" ? date : `${date}T${time}`,
+        end: endDate,
+        backgroundColor : (done ? "#80808080" : "#2C3E50"),
+      });
+    }
   }
 
   //확인완료 정리
@@ -354,6 +392,11 @@ function todosMain () {
           tempInputEl.type = "date";
           tempInputEl.value = event.target.dataset.value;
           break;
+        case "endDate":
+          tempInputEl = document.createElement("input");
+          tempInputEl.type = "endDate";
+          tempInputEl.value = event.target.dataset.value;
+          break;
         case "time":
           tempInputEl = document.createElement("input");
           tempInputEl.type = "time";
@@ -386,6 +429,7 @@ function todosMain () {
             id : id,
             title : todoObj.todo,
             start : todoObj.date,
+            end : todoObj.endDate,
           }); 
         }
       });
@@ -405,8 +449,9 @@ function todosMain () {
     let transDate = dateObj.toLocaleString("en-KR",{
       month : "numeric",
       day : "numeric",
-      //year : "numeric",
+      year : "numeric",
     });
+    transDate = date;
     return transDate;
   }
 
@@ -428,6 +473,7 @@ function todosMain () {
     let todo = document.getElementById("modalEditTodo").value;
     let category = document.getElementById("modalEditCategory").value;
     let date = document.getElementById("modalEditDate").value;
+    let endDate = document.getElementById("modalEditEndDate").value;
     let time = document.getElementById("modalEditTime").value;
     
     calendar.getEventById(id).remove();
@@ -439,6 +485,7 @@ function todosMain () {
           todo : todo,
           category : category,
           date : date,
+          endDate : endDate,
           time : time,
           done : false,
         };
@@ -455,6 +502,9 @@ function todosMain () {
       switch(type){
         case "date" :
           tdItemList[i].innerText = formatDate(date);
+          break;
+        case "endDate" :
+          tdItemList[i].innerText = formatDate(endDate);
           break;
         case "time" :
           tdItemList[i].innerText = time;
@@ -488,11 +538,12 @@ function todosMain () {
   //수정창 값 채우기
   function preFillEditForm(id){
     let result = todoList.find(todoObj => todoObj.id == id);
-    let {todo, category, date, time} = result;
+    let {todo, category, date, endDate, time} = result;
 
     document.getElementById("modalEditTodo").value = todo;
     document.getElementById("modalEditCategory").value = category;
     document.getElementById("modalEditDate").value = date;
+    document.getElementById("modalEditEndDate").value = endDate;
     document.getElementById("modalEditTime").value = time;
     changeBtn.dataset.id = id;
   }
@@ -547,28 +598,51 @@ function todosMain () {
 
   function calendarEventDragged(event){
     let id = event.id;
+    //
     let dateObj = new Date(event.start);
     let year = dateObj.getFullYear();
     let month = dateObj.getMonth() + 1;
     let date = dateObj.getDate();
     let hour = dateObj.getHours();
     let minute = dateObj.getMinutes();
+    
     let paddedMonth = month.toString();
-
     if (paddedMonth.length < 2){
       paddedMonth = "0" + paddedMonth;
     }
-
     let paddedDate = date.toString();
     if (paddedDate.length < 2){
       paddedDate = "0" + paddedDate;
     }
-
     let toStoreDate = `${year}-${paddedMonth}-${paddedDate}`;
 
+    //
+    let endDateObj = new Date(event.end);
+    let toStoreEDate;
+    let eyear = endDateObj.getFullYear();
+    let emonth = endDateObj.getMonth() + 1;
+    let edate = endDateObj.getDate();
+
+    let paddedEMonth = emonth.toString();
+    if (paddedEMonth.length < 2){
+      paddedEMonth = "0" + paddedEMonth;
+    }
+    let paddedEDate = edate.toString();
+    if (paddedEDate.length < 2){
+      paddedEDate = "0" + paddedEDate;
+    }
+    if(endDateObj != null && dateObj < endDateObj){
+      toStoreEDate = `${eyear}-${paddedEMonth}-${paddedEDate}`;
+      if ( edate - date <= -30){
+        toStoreEDate = ""
+      }
+    }
     todoList.forEach(todoObj => {
       if(todoObj.id == id){
         todoObj.date = toStoreDate;
+        if(endDateObj != "" && dateObj < endDateObj){
+          todoObj.endDate = toStoreEDate;
+        }
         if(hour !== 0)
           todoObj.time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
       }
@@ -578,5 +652,4 @@ function todosMain () {
 
     multipleFilters();
   }
-
 }
