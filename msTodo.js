@@ -316,8 +316,7 @@ function todosMain () {
       eventClick: function(info) {
         toEditItem(info.event);
       },
-      eventBackgroundColor : "#2C3E50",
-      eventBorderColor : "#1E2B37",
+      eventBorderColor : "#F79800",
       editable: true,
       eventDrop: function(info) {
         calendarEventDragged(info.event);
@@ -340,7 +339,7 @@ function todosMain () {
         title: todo,
         start: time === "" ? date : `${date}T${time}`,
         end: endDate,
-        backgroundColor : (done ? "#80808080" : "#2C3E50"),
+        backgroundColor : (endDate == "" ? (done ? "#80808080" : "#9D00F2") : (done ? "#80808080" : "#00E5BF")) ,
       });
     }
   }
