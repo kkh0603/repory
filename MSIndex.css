@@ -19,6 +19,14 @@ td{
   padding: 0px;
 }
 
+#dateInput{
+  padding-bottom: 2px;
+}
+
+#endDateInput{
+  padding-bottom: 2px;
+}
+
 .editFc{
   color: white;
   justify-content: center;

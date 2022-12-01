@@ -18,6 +18,7 @@ function todosMain () {
   let dragItem;
   let modalCloseBtn;
   let endDateInput;
+  let longSchedul;
 
   //기능
   getTodos();
@@ -26,6 +27,7 @@ function todosMain () {
   load();
   renderRows(todoList);
   updateNewFilterCategorie()
+  longSchedulHide()
 
   //투두스트 가져오기
   function getTodos() {
@@ -41,6 +43,7 @@ function todosMain () {
     todoTable = document.getElementById("todo-Table");
     modalCloseBtn = document.getElementById("modalCloseBtn");
     endDateInput = document.getElementById("endDateInput");
+    longSchedul = document.getElementById("longSchedul");
   }
 
   //투두리스트 추가
@@ -54,6 +57,7 @@ function todosMain () {
     todoTable.addEventListener("dragstart", onDragStart, false);
     todoTable.addEventListener("drop", onDrop, false);
     todoTable.addEventListener("dragover", onDragOver, false);
+    longSchedul.addEventListener("change", longSchedulHide, false);
   } 
 
   //추가
@@ -106,8 +110,6 @@ function todosMain () {
     updateNewFilterCategorie();
     eventAddCalendar(obj);
   }
-
-
 
   //분류 자동 업데이트
   function updateNewFilterCategorie() {
@@ -302,6 +304,7 @@ function todosMain () {
     calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       height: 560,
+      selectable: true,
       initialDate: new Date(),
       headerToolbar: {
         left: 'prev title next',
@@ -591,10 +594,12 @@ function todosMain () {
     save();
   }
   
+  //동작오류 방지
   function onDragOver(event){
     event.preventDefault();
   }
 
+  //드레그시
   function calendarEventDragged(event){
     let id = event.id;
     //
@@ -650,5 +655,24 @@ function todosMain () {
     save();
 
     multipleFilters();
+  }
+
+  //숨기기
+  function longSchedulHide() {
+    let longSchedulStatus = longSchedul.checked;
+    let displayTimeClass = document.getElementsByClassName("diplayTime")
+    let displayEndDayClass = document.getElementsByClassName("displayEndDay")
+    if (longSchedulStatus == true){
+      for ( let i = 0; i < displayTimeClass.length; i++){
+        displayTimeClass[i].style.cssText = "display : none"
+        displayEndDayClass[i].style.cssText = "display : block"
+      }
+    }
+    if (longSchedulStatus == false){
+      for ( let i = 0; i < displayTimeClass.length; i++){
+        displayTimeClass[i].style.cssText = "display : block"
+        displayEndDayClass[i].style.cssText = "display : none"
+      }
+    }
   }
 }
