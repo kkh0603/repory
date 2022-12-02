@@ -178,19 +178,19 @@ function todosMain () {
     trElem.appendChild(tdCheckBox);
 
     // //날짜 리스트업
-    // let tdDateList = document.createElement("td");
-    // tdDateList.innerText = date;
-    // trElem.appendChild(tdDateList);
+    let tdDateList = document.createElement("td");
+    tdDateList.innerText = date;
+    trElem.appendChild(tdDateList);
 
     // //종료날짜 리스트업
-    // let tdEndDateList = document.createElement("td");
-    // tdEndDateList.innerText = endDate;
-    // trElem.appendChild(tdEndDateList);
+    let tdEndDateList = document.createElement("td");
+    tdEndDateList.innerText = endDate;
+    trElem.appendChild(tdEndDateList);
     
     // //시간 리스트업
-    // let tdTimeLiist = document.createElement("td");
-    // tdTimeLiist.innerText = time;
-    // trElem.appendChild(tdTimeLiist);
+    let tdTimeLiist = document.createElement("td");
+    tdTimeLiist.innerText = time;
+    trElem.appendChild(tdTimeLiist);
 
     //할일 리스트업
     let tdTodoList = document.createElement("td");
@@ -198,10 +198,10 @@ function todosMain () {
     trElem.appendChild(tdTodoList);
 
     // //카테고리 리스트업
-    // let tdCategory = document.createElement("td");
-    // tdCategory.innerText = inCategoryVal;
-    // tdCategory.className = "category";
-    // trElem.appendChild(tdCategory);
+    let tdCategory = document.createElement("td");
+    tdCategory.innerText = inCategoryVal;
+    tdCategory.className = "category";
+    trElem.appendChild(tdCategory);
 
     //애딧 셀
     let editElem = document.createElement("span");
@@ -235,17 +235,17 @@ function todosMain () {
     }
 
     //수정
-    // tdDateList.dataset.type = 'date'; 
-    // tdEndDateList.dataset.type = 'endDate';
-    // tdTimeLiist.dataset.type = 'time';
+    tdDateList.dataset.type = 'date'; 
+    tdEndDateList.dataset.type = 'endDate';
+    tdTimeLiist.dataset.type = 'time';
     tdTodoList.dataset.type = "todo"; 
-    // tdCategory.dataset.type = "category";
+    tdCategory.dataset.type = "category";
     
-    // tdDateList.dataset.id = id;
-    // tdEndDateList.dataset.id = id;
-    // tdTimeLiist.dataset.id = id;
+    tdDateList.dataset.id = id;
+    tdEndDateList.dataset.id = id;
+    tdTimeLiist.dataset.id = id;
     tdTodoList.dataset.id = id;
-    // tdCategory.dataset.id = id;   q
+    tdCategory.dataset.id = id;   
 
     //삭제
     function deleteTodo() {

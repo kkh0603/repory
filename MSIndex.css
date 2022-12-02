@@ -63,8 +63,11 @@ td{
   text-align: center;
 }
 
+
+
 #tableItem{
   width: 100%;
+  height: 310px;
   overflow: auto;
 }
 
@@ -216,6 +219,11 @@ label {
   padding: 10px;
   border: 1px solid #999999;
   border-radius: 20px;
+}
+
+.startDayTime{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .todoInputContainer{

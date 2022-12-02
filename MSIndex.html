@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
   <!-- <link rel="stylesheet" href="./node_modules/fullcalendar/main.min.css">
   <script src="./node_modules/fullcalendar/main.min.js" defer></script> -->
-  <script src = "msTodo.js" defer></script>
+  <script src = "./msTodo.js" defer></script>
 </head>
 <body>
   <header>
@@ -26,7 +26,7 @@
     <!-- 왼쪽 프레임 -->
     <div class="TD">
       <!-- 왼쪽 입력부 -->
-      <div id = "todoBlock">
+      <div id = "todoBlock" class="testtest">
         <div class="todoInputContainer">
           <span> 할일 : </span>
           <input type="text" placeholder="할 일을 입력해 주세요">
@@ -38,17 +38,24 @@
           </datalist>
         </div>
         <div class="dateInputContainer">
-          <span> 날짜 : </span>
-          <input type="date" id="dateInput">
+          <span> 날짜/시간 : </span>
+          <span class="startDayTime">
+              <input type="date" id="dateInput">
+              <input type="time" id="timeInput" class="">
+          </span>
+          
           <span class="displayEndDay"> 종료날짜 : </span>
-          <input type="date" id="endDateInput" class="displayEndDay">
-          <span class="diplayTime"> 시간 : </span>
-          <input type="time" id="timeInput" class="diplayTime">
+          <span class="diplayTime"> 종료 시간 : </span>
+          <span class="startDayTime">
+            <label for=""> 긴 일정
+              <input type="checkbox" id="longSchedul">
+            </label>
+            <input type="date" id="endDateInput" class="displayEndDay ">
+            <input type="time" id="endTimeInput" class="diplayTime">
+          </span>
         </div>
         <div class="InputButtonCTN"> 
-          <label for=""> 긴 일정
-            <input type="checkbox" id="longSchedul">
-          </label>
+          <span></span>
           <button id = "inputBtn" class="todoBtn">입력</button>
           <label for=""> 완료 숨김
             <input type="checkbox" id="checkedItem">
