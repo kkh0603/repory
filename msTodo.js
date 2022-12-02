@@ -19,6 +19,9 @@ function todosMain () {
   let modalCloseBtn;
   let endDateInput;
   let longSchedul;
+  let longSchedulModal;
+  let modalEditEndDate;
+  let modalEditTime;
 
   //기능
   getTodos();
@@ -26,8 +29,9 @@ function todosMain () {
   initCalendar();
   load();
   renderRows(todoList);
-  updateNewFilterCategorie()
-  longSchedulHide()
+  updateNewFilterCategorie();
+  longSchedulHide();
+  longSchedulModalHide();
 
   //투두스트 가져오기
   function getTodos() {
@@ -44,6 +48,9 @@ function todosMain () {
     modalCloseBtn = document.getElementById("modalCloseBtn");
     endDateInput = document.getElementById("endDateInput");
     longSchedul = document.getElementById("longSchedul");
+    longSchedulModal = document.getElementById("longSchedulModal");
+    modalEditEndDate = document.getElementById("modalEditEndDate");
+    modalEditTime = document.getElementById("modalEditTime");
   }
 
   //투두리스트 추가
@@ -58,6 +65,7 @@ function todosMain () {
     todoTable.addEventListener("drop", onDrop, false);
     todoTable.addEventListener("dragover", onDragOver, false);
     longSchedul.addEventListener("change", longSchedulHide, false);
+    longSchedulModal.addEventListener("change", longSchedulModalHide, false);
   } 
 
   //추가
@@ -93,7 +101,6 @@ function todosMain () {
     }else{
       inEndDateVal = "";
     }
-    
 
     let obj = {
       id :  _uuid(),
@@ -110,7 +117,7 @@ function todosMain () {
     updateNewFilterCategorie();
     eventAddCalendar(obj);
   }
-
+  
   //분류 자동 업데이트
   function updateNewFilterCategorie() {
     let options = [];
@@ -170,31 +177,31 @@ function todosMain () {
     tdCheckBox.appendChild(checkedBoxTodo);
     trElem.appendChild(tdCheckBox);
 
-    //날짜 리스트업
-    let tdDateList = document.createElement("td");
-    tdDateList.innerText = date;
-    trElem.appendChild(tdDateList);
+    // //날짜 리스트업
+    // let tdDateList = document.createElement("td");
+    // tdDateList.innerText = date;
+    // trElem.appendChild(tdDateList);
 
-    //종료날짜 리스트업
-    let tdEndDateList = document.createElement("td");
-    tdEndDateList.innerText = endDate;
-    trElem.appendChild(tdEndDateList);
+    // //종료날짜 리스트업
+    // let tdEndDateList = document.createElement("td");
+    // tdEndDateList.innerText = endDate;
+    // trElem.appendChild(tdEndDateList);
     
-    //시간 리스트업
-    let tdTimeLiist = document.createElement("td");
-    tdTimeLiist.innerText = time;
-    trElem.appendChild(tdTimeLiist);
+    // //시간 리스트업
+    // let tdTimeLiist = document.createElement("td");
+    // tdTimeLiist.innerText = time;
+    // trElem.appendChild(tdTimeLiist);
 
     //할일 리스트업
     let tdTodoList = document.createElement("td");
     tdTodoList.innerText = inTodoVal;
     trElem.appendChild(tdTodoList);
 
-    //카테고리 리스트업
-    let tdCategory = document.createElement("td");
-    tdCategory.innerText = inCategoryVal;
-    tdCategory.className = "category";
-    trElem.appendChild(tdCategory);
+    // //카테고리 리스트업
+    // let tdCategory = document.createElement("td");
+    // tdCategory.innerText = inCategoryVal;
+    // tdCategory.className = "category";
+    // trElem.appendChild(tdCategory);
 
     //애딧 셀
     let editElem = document.createElement("span");
@@ -228,17 +235,17 @@ function todosMain () {
     }
 
     //수정
-    tdDateList.dataset.type = 'date'; 
-    tdEndDateList.dataset.type = 'endDate';
-    tdTimeLiist.dataset.type = 'time';
+    // tdDateList.dataset.type = 'date'; 
+    // tdEndDateList.dataset.type = 'endDate';
+    // tdTimeLiist.dataset.type = 'time';
     tdTodoList.dataset.type = "todo"; 
-    tdCategory.dataset.type = "category";
+    // tdCategory.dataset.type = "category";
     
-    tdDateList.dataset.id = id;
-    tdEndDateList.dataset.id = id;
-    tdTimeLiist.dataset.id = id;
+    // tdDateList.dataset.id = id;
+    // tdEndDateList.dataset.id = id;
+    // tdTimeLiist.dataset.id = id;
     tdTodoList.dataset.id = id;
-    tdCategory.dataset.id = id;   
+    // tdCategory.dataset.id = id;   q
 
     //삭제
     function deleteTodo() {
@@ -524,7 +531,6 @@ function todosMain () {
   //항목 수정
   function toEditItem(event){
     showModalBox();
-
     let id;
 
     if (event.target){
@@ -532,7 +538,7 @@ function todosMain () {
     } else {
       id = event.id;
     }
-
+    
     preFillEditForm(id);
 
   }
@@ -666,13 +672,35 @@ function todosMain () {
       for ( let i = 0; i < displayTimeClass.length; i++){
         displayTimeClass[i].style.cssText = "display : none"
         displayEndDayClass[i].style.cssText = "display : block"
+        timeInput.value = "";
       }
     }
     if (longSchedulStatus == false){
       for ( let i = 0; i < displayTimeClass.length; i++){
         displayTimeClass[i].style.cssText = "display : block"
         displayEndDayClass[i].style.cssText = "display : none"
+        endDateInput.value = "";
       }
     }
   }
-}
+
+  function longSchedulModalHide() {
+    let longSchedulModalStatus = longSchedulModal.checked;
+    let displayTimeModalClass = document.getElementsByClassName("diplayTimeModal")
+    let displayEndDayModalClass = document.getElementsByClassName("diplayEndDateModal")
+    if (longSchedulModalStatus == true){
+      for ( let i = 0; i < displayTimeModalClass.length; i++){
+        displayTimeModalClass[i].style.cssText = "display : none"
+        displayEndDayModalClass[i].style.cssText = "display : block"
+        modalEditTime.value = "";
+      }
+    }
+    if (longSchedulModalStatus == false){
+      for ( let i = 0; i < displayTimeModalClass.length; i++){
+        displayTimeModalClass[i].style.cssText = "display : block"
+        displayEndDayModalClass[i].style.cssText = "display : none"
+        modalEditEndDate.value = "";
+      }
+    }
+  }
+}  

@@ -101,13 +101,15 @@
           <div class="dateInputContainer">
             <span> 날짜 : </span>
             <input type="date" id="modalEditDate">
-            <span> 종료날짜 : </span>
-            <input type="date" id="modalEditEndDate">
-            <span> 시간 : </span>
-            <input type="time" id="modalEditTime">
+            <span class="diplayEndDateModal"> 종료날짜 : </span>
+            <input type="date" id="modalEditEndDate" class="diplayEndDateModal">
+            <span class="diplayTimeModal"> 시간 : </span>
+            <input type="time" id="modalEditTime" class="diplayTimeModal">
           </div>
           <div class="InputButtonCTN"> 
-            <span></span>
+            <label for=""> 긴 일정
+              <input type="checkbox" id="longSchedulModal">
+            </label>
             <button id = "changeBtn" class="todoBtn">변경</button>
           </div>
         </div>
