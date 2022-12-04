@@ -38,20 +38,29 @@
           </datalist>
         </div>
         <div class="dateInputContainer">
-          <span> 날짜/시간 : </span>
-          <span class="startDayTime">
-              <input type="date" id="dateInput">
-              <input type="time" id="timeInput" class="">
-          </span>
-          
-          <span class="displayEndDay"> 종료날짜 : </span>
-          <span class="diplayTime"> 종료 시간 : </span>
-          <span class="startDayTime">
+          <!-- 날짜 좌측 -->
+          <span class="partition">
+            <span> 날짜: </span>
             <label for=""> 긴 일정
-              <input type="checkbox" id="longSchedul">
+              <input type="checkbox" id="longSchedul" class="inputcontainerCheckBox">
             </label>
-            <input type="date" id="endDateInput" class="displayEndDay ">
-            <input type="time" id="endTimeInput" class="diplayTime">
+          </span>
+          <!-- 날짜 우측 -->
+          <span class="partition">
+            <input type="date" id="dateInput">
+            <input type="date" id="endDateInput" class="displayEndDay">
+          </span>
+          <!-- 시간 좌측 -->
+          <span class="partition">
+            <span>시간 : </span>
+            <label for="" class="timeLeft"> 하루종일
+              <input type="checkbox" id="allDay"  class="inputcontainerCheckBox">
+            </label>
+          </span>
+          <!-- 시간 우측 -->
+          <span class="partition">
+            <input type="time" id="timeInput" class="timeRight">
+            <input type="time" id="endTimeInput" class="diplayTime timeRight">
           </span>
         </div>
         <div class="InputButtonCTN"> 
@@ -72,14 +81,15 @@
               <td></td>
               <td>Start Date</td>
               <td>End Date</td>
-              <td>Time</td>
+              <td>Start Time</td>
+              <td>End Time</td>
               <td>Todo</td>
-              <td>
+              <!-- <td>
                 <select id="todoFilter">
                 </select>
-              </td>
-              <td></td>
-              <td></td>
+              </td> -->
+              <td>Edit</td>
+              <td>Del</td>
             </tr>
           </table>
         </div>
@@ -106,17 +116,33 @@
             </datalist>
           </div>
           <div class="dateInputContainer">
-            <span> 날짜 : </span>
-            <input type="date" id="modalEditDate">
-            <span class="diplayEndDateModal"> 종료날짜 : </span>
-            <input type="date" id="modalEditEndDate" class="diplayEndDateModal">
-            <span class="diplayTimeModal"> 시간 : </span>
-            <input type="time" id="modalEditTime" class="diplayTimeModal">
+            <!-- 날짜 좌측 -->
+            <span class="partition">
+              <span> 날짜 : </span>
+              <label for=""> 긴 일정
+                <input type="checkbox" id="longSchedulModal">
+              </label>
+            </span>
+            <!-- 날짜 우측 -->
+            <span class="partition">
+              <input type="date" id="modalEditDate">
+              <input type="date" id="modalEditEndDate" class="diplayEndDateModal">
+            </span>
+            <!-- 시간 좌측 -->
+            <span class="partition">
+              <span> 시간 : </span>
+              <label for=""> 긴 일정
+                <input type="checkbox" id="modalAllDay">
+              </label>
+            </span>
+            <!-- 시간 우측 -->
+            <span class="partition modalTimeRight">
+              <input type="time" id="modalEditTime" class="diplayTimeModal">
+              <input type="time" id="modalEditEndTime" class="diplayTimeModal">
+            </span>
           </div>
           <div class="InputButtonCTN"> 
-            <label for=""> 긴 일정
-              <input type="checkbox" id="longSchedulModal">
-            </label>
+            <span></span>
             <button id = "changeBtn" class="todoBtn">변경</button>
           </div>
         </div>

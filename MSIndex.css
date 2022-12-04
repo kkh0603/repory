@@ -189,6 +189,7 @@ label {
   justify-content: center;
   align-items: center;
 }
+
 #checkedItem{
   margin: 0;
   position:relative; top:3px;
@@ -196,8 +197,6 @@ label {
 
 .checkFc{
   accent-color: #1e1e1e;
-  justify-content: center;
-  align-items: center;
 }
 
 #todoBlock{
@@ -221,14 +220,23 @@ label {
   border-radius: 20px;
 }
 
-.startDayTime{
+.partition{
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
+.partition label{
+  border: 0px  white;
+  border-radius: 20px;
+  background-color: white;
+  width: 80px;
+  display: flex;
+}
+
+
 .todoInputContainer{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 3fr;
   row-gap: 10px;
   margin-bottom: 10px;
 }
@@ -241,7 +249,7 @@ label {
 
 .dateInputContainer{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 3fr;
   row-gap: 10px;
   margin-bottom: 10px;
 }
@@ -254,7 +262,7 @@ label {
 
 .InputButtonCTN{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 3fr;
 }
 
 #inputBtn{
