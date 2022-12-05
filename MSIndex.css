@@ -204,6 +204,7 @@ label {
   margin-bottom: 10px;
   background-color: #c8c8c885;
 }
+
 .todoItemList{
   padding: 20px;
   /* border: 1px solid rgb(47, 185, 112); */
@@ -350,10 +351,16 @@ label {
   transition: transform 250ms;
 }
 
+#todoBlockModal{
+  padding: 20px;
+  /* border: 1px solid rgb(47, 185, 112); */
+  border-radius: 20px;
+  background-color: #c8c8c885;
+}
+
 .todoModalBox{
   width: 500px;
-  height: 140px;
-  padding-bottom: 45px;
+  height: fit-content;
   border-radius: 20px;
   background-color: rgb(255, 255, 255);
   min-width: 375px;
@@ -363,7 +370,7 @@ label {
   /* background-color: #1E2B37; */
   color: white;
   position: relative;
-  top: -120px;
+  top: -90px;
   left: -27px;
   width: 25px;
   height: 25px;
