@@ -30,12 +30,12 @@
         <div class="todoInputContainer">
           <span> 할일 : </span>
           <input type="text" placeholder="할 일을 입력해 주세요">
-          <span> 분류 : </span>
+          <!-- <span> 분류 : </span>
           <input type="text" placeholder="분류" list = "TodoDataList">
           <datalist id = "TodoDataList">
             <option value="normal"></option>
             <option value="important"></option>
-          </datalist>
+          </datalist> -->
         </div>
         <div class="dateInputContainer">
           <!-- 날짜 좌측 -->
@@ -53,7 +53,7 @@
           <!-- 시간 좌측 -->
           <span class="partition">
             <span>시간 : </span>
-            <label for="" class="timeLeft"> 하루종일
+            <label for="" class="timeLeft"> 온종일
               <input type="checkbox" id="allDay"  class="inputcontainerCheckBox">
             </label>
           </span>
@@ -131,14 +131,14 @@
             <!-- 시간 좌측 -->
             <span class="partition">
               <span> 시간 : </span>
-              <label for=""> 긴 일정
+              <label for="" class="timeLeftModal"> 온종일
                 <input type="checkbox" id="modalAllDay">
               </label>
             </span>
             <!-- 시간 우측 -->
-            <span class="partition modalTimeRight">
-              <input type="time" id="modalEditTime" class="diplayTimeModal">
-              <input type="time" id="modalEditEndTime" class="diplayTimeModal">
+            <span class="partition">
+              <input type="time" id="modalEditTime" class="timeRightModal">
+              <input type="time" id="modalEditEndTime" class="diplayTimeModal timeRightModal">
             </span>
           </div>
           <div class="InputButtonCTN"> 

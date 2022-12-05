@@ -63,8 +63,6 @@ td{
   text-align: center;
 }
 
-
-
 #tableItem{
   width: 100%;
   height: 310px;
@@ -285,7 +283,7 @@ label {
   font-size: 20px !important;
   position: relative !important;
   margin-top: 5px !important;
-  width: 170px !important;
+  width: 220px !important;
   text-align: center !important;
 }
 

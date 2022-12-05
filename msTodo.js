@@ -121,6 +121,18 @@ function todosMain () {
       }
     }
 
+    if (longSchedul.checked == true){
+      let inDateErr = inDateVal.split("-").join("");
+      let inEndDateErr = inEndDateVal.split("-").join("");
+      if (inDateErr >= inEndDateErr){
+        alert("날짜 설정이 잘못 설정 되었습니다");
+        return false;
+      }else if ((inEndDateErr - inDateErr)<=1){
+        lert("하루 종일 시간 Check로 설정해 주세요");
+        return false;
+      }
+    } 
+
     let obj = {
       id :  _uuid(),
       todo : inTodoVal,
@@ -181,7 +193,7 @@ function todosMain () {
     });
   }
 
-  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, endDate, time, done}) {
+  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, endDate, time, endTime, done}) {
     let trElem = document.createElement("tr");
     todoTable.appendChild(trElem);
     trElem.draggable = "true";
@@ -231,7 +243,7 @@ function todosMain () {
 
     // //시간 리스트업
     let tdEndTimeLiist = document.createElement("td");
-    tdEndTimeLiist.innerText = time;
+    tdEndTimeLiist.innerText = endTime;
     trElem.appendChild(tdEndTimeLiist);
 
     //할일 리스트업
@@ -513,7 +525,26 @@ function todosMain () {
       day : "numeric",
       year : "numeric",
     });
-    transDate = date;
+    let tdDateTemp = new Date(date);
+    let tdYearTemp = tdDateTemp.getFullYear();
+    let tdMonthTemp = tdDateTemp.getMonth() + 1;
+    let tdDayTemp = tdDateTemp.getDate()-1;
+    let tdPaddedMonthTmp = tdMonthTemp.toString();
+    if (tdPaddedMonthTmp.length < 2){
+      tdPaddedMonthTmp = "0" + tdPaddedMonthTmp;
+    }
+    let tdPaddedDayTmp = tdDayTemp.toString();
+    if (tdPaddedDayTmp.length < 2){
+      tdPaddedDayTmp = "0" + tdPaddedDayTmp;
+    }
+    let tdPackingEndDate = `${tdYearTemp}-${tdPaddedMonthTmp}-${tdPaddedDayTmp}`
+    if (tdPackingEndDate != "NaN-NaN-NaN"){
+      // tdEndDateList.innerText = endDate;
+      transDate = tdPackingEndDate;
+    }else{
+      transDate = "";
+    }
+    // transDate = date;
     return transDate;
   }
 
@@ -636,17 +667,17 @@ function todosMain () {
       tdPaddedDayTmp = "0" + tdPaddedDayTmp;
     }
     let tdPackingEndDate = `${tdYearTemp}-${tdPaddedMonthTmp}-${tdPaddedDayTmp}`
+    let modalEndDate;
     if (tdPackingEndDate != "NaN-NaN-NaN"){
       // tdEndDateList.innerText = endDate;
-      tdEndDateList.innerText = tdPackingEndDate;
+      modalEndDate = tdPackingEndDate;
     }else{
-      tdPackingEndDate = "";
+      modalEndDate = "";
     }
-    console.log(endDate)
     document.getElementById("modalEditTodo").value = todo;
     document.getElementById("modalEditCategory").value = category;
     document.getElementById("modalEditDate").value = date;
-    document.getElementById("modalEditEndDate").value = endDate;
+    document.getElementById("modalEditEndDate").value = modalEndDate;
     document.getElementById("modalEditTime").value = time;
     document.getElementById("modalEditEndTime").value = time;
     changeBtn.dataset.id = id;
@@ -772,7 +803,7 @@ function todosMain () {
         endTimeInput.value = "";
       }
       for ( let i = 0; i < displayEndDayClass.length; i++){
-        displayEndDayClass[i].style.cssText = "display : block"
+        displayEndDayClass[i].style.cssText = "display : "
       }
       for ( let i = 0 ;  i < timeLeftClass.length; i++){
         timeLeftClass[i].style.cssText = "display : none"
@@ -785,20 +816,78 @@ function todosMain () {
         endDateInput.value = "";
       }
       for ( let i = 0; i < timeRightClass.length; i++){
-        timeRightClass[i].style.cssText = "display : block"
+        timeRightClass[i].style.cssText = "display : "
       }
       for ( let i = 0 ;  i < timeLeftClass.length; i++){
-        timeLeftClass[i].style.cssText = "display : block"
+        timeLeftClass[i].style.cssText = "display : "
+      }
+    }
+  }
+
+  function allDayHide (){
+    let allDayStatus = allDay.checked;
+    let timeRightClass = document.getElementsByClassName("timeRight")
+    if (allDayStatus == true){
+      for ( let i = 0; i < timeRightClass.length; i++){
+        timeRightClass[i].style.cssText = "display : none"
+        timeInput.value = "";
+        endTimeInput.value = "";
+      }
+    }else{
+      for ( let i = 0; i < timeRightClass.length; i++){
+        timeRightClass[i].style.cssText = "display : "
       }
     }
   }
 
   function longSchedulModalHide() {
+    let longSchedulModalStatus = longSchedulModal.checked;
+    let timeRightModalClass = document.getElementsByClassName("timeRightModal")
+    let diplayEndDateModalClass = document.getElementsByClassName("diplayEndDateModal")
+    let timeLeftModalClass = document.getElementsByClassName("timeLeftModal")
+    if (longSchedulModalStatus == true){
+      for ( let i = 0; i < timeRightModalClass.length; i++){
+        timeRightModalClass[i].style.cssText = "display : none"
+        modalEditTime.value = "";
+        modalEditEndTime.value = "";
+      }
+      for ( let i = 0; i < diplayEndDateModalClass.length; i++){
+        diplayEndDateModalClass[i].style.cssText = "display : "
+      }
+      for ( let i = 0 ;  i < timeLeftModalClass.length; i++){
+        timeLeftModalClass[i].style.cssText = "display : none"
+        allDay.checked = false;
+      }
+    }
+    if (longSchedulModalStatus == false){
+      for ( let i = 0; i < diplayEndDateModalClass.length; i++){
+        diplayEndDateModalClass[i].style.cssText = "display : none"
+        modalEditEndDate.value = "";
+      }
+      for ( let i = 0; i < timeRightModalClass.length; i++){
+        timeRightModalClass[i].style.cssText = "display : "
+      }
+      for ( let i = 0 ;  i < timeLeftModalClass.length; i++){
+        timeLeftModalClass[i].style.cssText = "display : "
+      }
+    }
   }
-
-  function allDayHide (){
-  }
+   
   
   function modalAllDayHide(){
+    let modalAllDayStatus = modalAllDay.checked;
+    let timeRightModalClass = document.getElementsByClassName("timeRightModal")
+    if (modalAllDayStatus == true){
+      for ( let i = 0; i < timeRightModalClass.length; i++){
+        timeRightModalClass[i].style.cssText = "display : none"
+        modalEditTime.value = "";
+        modalEditEndTime.value = "";
+      }
+    }
+    if (modalAllDayStatus == false){
+      for ( let i = 0; i < timeRightModalClass.length; i++){
+        timeRightModalClass[i].style.cssText = "display : "
+      }
+    }
   }
 }  
