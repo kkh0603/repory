@@ -92,6 +92,10 @@ function todosMain () {
     endTimeInput.value = "";
     let endDateInputVal = endDateInput.value;
     endDateInput.value = "";
+    let longSchedulVal = longSchedul.checked;
+    longSchedul.checked = "";
+    let allDayVal = allDay.checked;
+    allDay.checked = "";
     // 종료 날짜 포멧
     let dateTemp = new Date(endDateInputVal);
     let yearTemp = dateTemp.getFullYear();
@@ -112,23 +116,42 @@ function todosMain () {
     }else{
       inEndDateVal = "";
     }
-    if (allDay.checked == false && longSchedul.checked == false && inEndTimeVal != ""){
+    if (inTodoVal == "" && inDateVal== ""){
+      alert("설정을 다시 확인해 주세요");
+      longSchedulHide();
+      allDayHide();
+      return false;
+    }
+
+    if (allDayVal == false && longSchedulVal == false && inEndTimeVal != ""){
       let inTimeErrB = inTimeVal.split(":").join("");
       let endTuimErrB = inEndTimeVal.split(":").join("");
       if (inTimeErrB > endTuimErrB){
         alert("시간 설정이 잘못 설정 되었습니다");
+        longSchedulHide();
+        allDayHide();
         return false;
       }
     }
+    if(allDayVal == false && longSchedulVal == false && inEndTimeVal == "" && inTimeVal == ""){
+      alert("시간 설정을 하지 않았습니다");
+      longSchedulHide();
+      allDayHide();
+      return false;
+    }
 
-    if (longSchedul.checked == true){
+    if (longSchedulVal == true){
       let inDateErr = inDateVal.split("-").join("");
       let inEndDateErr = inEndDateVal.split("-").join("");
       if (inDateErr >= inEndDateErr){
         alert("날짜 설정이 잘못 설정 되었습니다");
+        longSchedulHide();
+        allDayHide();
         return false;
       }else if ((inEndDateErr - inDateErr)<=1){
-        lert("하루 종일 시간 Check로 설정해 주세요");
+        alert("하루 종일 시간 Check로 설정해 주세요");
+        longSchedulHide();
+        allDayHide();
         return false;
       }
     } 
@@ -142,12 +165,16 @@ function todosMain () {
       time : inTimeVal,
       endTime : inEndTimeVal,
       done : false,
+      allDay : allDayVal,
+      longSchedul : longSchedulVal,
     };
     renderRow(obj)
     todoList.push(obj);
     save();
     updateNewFilterCategorie();
     eventAddCalendar(obj);
+    longSchedulHide();
+    allDayHide();
   }
   
   //분류 자동 업데이트
@@ -193,7 +220,7 @@ function todosMain () {
     });
   }
 
-  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, endDate, time, endTime, done}) {
+  function renderRow({todo: inTodoVal, category: inCategoryVal, id, date, endDate, time, endTime, allDay, longSchedul, done}) {
     let trElem = document.createElement("tr");
     todoTable.appendChild(trElem);
     trElem.draggable = "true";
@@ -400,13 +427,31 @@ function todosMain () {
   // 켈린더 일정 추가
   function eventAddCalendar({id, todo, date, endDate, time, endTime, longSchedul, allDay, done}){
     if (!done){
-      calendar.addEvent({
-        id: id,
-        title: todo,
-        start: time === "" ? date : `${date}T${time}`,
-        end: endDate,
-        backgroundColor : (endDate == "" ? (done ? "#80808080" : "#9D00F2") : (done ? "#80808080" : "#00E5BF")) ,
-      });
+      if (longSchedul == true){
+        calendar.addEvent({
+          id: id,
+          title: todo,
+          start: date,
+          end: endDate,
+          backgroundColor : (done ? "#80808080" : "#00E5BF"),
+        });
+      }else{
+        if(allDay == true){
+          calendar.addEvent({
+            id: id,
+            title: todo,
+            start: date,
+            backgroundColor : (done ? "#80808080" : "#9D00F2"),
+          });
+        }else{
+          calendar.addEvent({
+            id: id,
+            title: todo,
+            start: `${date}T${time}`,
+            end: `${date}T${endTime}`,
+          });
+        }
+      }
     }
   }
 
@@ -469,11 +514,16 @@ function todosMain () {
         case "endDate":
           tempInputEl = document.createElement("input");
           tempInputEl.type = "endDate";
-          tempInputEl.value = event.target.dataset.value;
+          // tempInputEl.value = event.target.dataset.value;
           break;
         case "time":
           tempInputEl = document.createElement("input");
           tempInputEl.type = "time";
+          tempInputEl.value = event.target.innerText;
+          break;
+        case "endTime":
+          tempInputEl = document.createElement("input");
+          tempInputEl.type = "endTime";
           tempInputEl.value = event.target.innerText;
           break;
         case "todo":
@@ -735,7 +785,7 @@ function todosMain () {
   //드레그시
   function calendarEventDragged(event){
     let id = event.id;
-    //
+    
     let dateObj = new Date(event.start);
     let year = dateObj.getFullYear();
     let month = dateObj.getMonth() + 1;
@@ -753,13 +803,13 @@ function todosMain () {
     }
     let toStoreDate = `${year}-${paddedMonth}-${paddedDate}`;
 
-    //
     let endDateObj = new Date(event.end);
     let toStoreEDate;
     let eyear = endDateObj.getFullYear();
     let emonth = endDateObj.getMonth() + 1;
     let edate = endDateObj.getDate();
-
+    let ehour = endDateObj.getHours();
+    let eminute = endDateObj.getMinutes();
     let paddedEMonth = emonth.toString();
     if (paddedEMonth.length < 2){
       paddedEMonth = "0" + paddedEMonth;
@@ -777,11 +827,15 @@ function todosMain () {
     todoList.forEach(todoObj => {
       if(todoObj.id == id){
         todoObj.date = toStoreDate;
-        if(endDateObj != "" && dateObj < endDateObj){
-          todoObj.endDate = toStoreEDate;
+        if(hour == 00 && minute == 00 && ehour== 00 && eminute== 00){
+          if(endDateObj != "" && dateObj < endDateObj){
+            todoObj.endDate = toStoreEDate;
+          }
         }
         if(hour !== 0)
           todoObj.time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+        if(ehour !== 0 && event.allDay == false)
+          todoObj.endTime = `${ehour.toString().padStart(2, "0")}:${eminute.toString().padStart(2, "0")}`;
       }
     });
 
