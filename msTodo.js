@@ -758,6 +758,9 @@ function todosMain () {
         case "time" :
           tdItemList[i].innerText = time;
           break;
+        case "endTime" :
+          tdItemList[i].innerText = endTime;
+          break;
         case "todo" :
           tdItemList[i].innerText = todo;
           break;
