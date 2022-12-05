@@ -116,7 +116,7 @@ function todosMain () {
     }else{
       inEndDateVal = "";
     }
-    if (inTodoVal == "" && inDateVal== ""){
+    if (inTodoVal == "" || inDateVal== ""){
       alert("설정을 다시 확인해 주세요");
       longSchedulHide();
       allDayHide();
@@ -578,6 +578,37 @@ function todosMain () {
     let tdDateTemp = new Date(date);
     let tdYearTemp = tdDateTemp.getFullYear();
     let tdMonthTemp = tdDateTemp.getMonth() + 1;
+    let tdDayTemp = tdDateTemp.getDate();
+    let tdPaddedMonthTmp = tdMonthTemp.toString();
+    if (tdPaddedMonthTmp.length < 2){
+      tdPaddedMonthTmp = "0" + tdPaddedMonthTmp;
+    }
+    let tdPaddedDayTmp = tdDayTemp.toString();
+    if (tdPaddedDayTmp.length < 2){
+      tdPaddedDayTmp = "0" + tdPaddedDayTmp;
+    }
+    let tdPackingEndDate = `${tdYearTemp}-${tdPaddedMonthTmp}-${tdPaddedDayTmp}`
+    if (tdPackingEndDate != "NaN-NaN-NaN"){
+      // tdEndDateList.innerText = endDate;
+      transDate = tdPackingEndDate;
+    }else{
+      transDate = "";
+    }
+    // transDate = date;
+    return transDate;
+  }
+
+  //종료날짜 포멧
+  function formatEndDate (date) {
+    let dateObj = new Date(date);
+    let transDate = dateObj.toLocaleString("en-KR",{
+      month : "numeric",
+      day : "numeric",
+      year : "numeric",
+    });
+    let tdDateTemp = new Date(date);
+    let tdYearTemp = tdDateTemp.getFullYear();
+    let tdMonthTemp = tdDateTemp.getMonth() + 1;
     let tdDayTemp = tdDateTemp.getDate()-1;
     let tdPaddedMonthTmp = tdMonthTemp.toString();
     if (tdPaddedMonthTmp.length < 2){
@@ -610,36 +641,86 @@ function todosMain () {
 
   //수정 완료
   function commitEdit(event){
-    closeModalBox();
 
     let id = event.target.dataset.id;
     let todo = document.getElementById("modalEditTodo").value;
-    let category = document.getElementById("modalEditCategory").value;
+    // let category = document.getElementById("modalEditCategory").value;
     let date = document.getElementById("modalEditDate").value;
     let endDatebuf = document.getElementById("modalEditEndDate").value;
     let time = document.getElementById("modalEditTime").value;
     let endTime = document.getElementById("modalEditEndTime").value;
-
-    let dateTemp = new Date(endDatebuf);
-    let yearTemp = dateTemp.getFullYear();
-    let monthTemp = dateTemp.getMonth() + 1;
-    let dayTemp = dateTemp.getDate()+1;
-    let paddedMonthTmp = monthTemp.toString();
-    if (paddedMonthTmp.length < 2){
-      paddedMonthTmp = "0" + paddedMonthTmp;
-    }
-    let paddedDateTmp = dayTemp.toString();
-    if (paddedDateTmp.length < 2){
-      paddedDateTmp = "0" + paddedDateTmp;
-    }
-    let packingEndDate = `${yearTemp}-${paddedMonthTmp}-${paddedDateTmp}`
+    let allDayVal = document.getElementById("modalAllDay").checked
+    let longSchedulVal = document.getElementById("longSchedulModal").checked
     let endDate;
-    if (packingEndDate != "NaN-NaN-NaN"){
-      endDate = packingEndDate;
+    if (longSchedulVal == true){
+      let dateTemp = new Date(endDatebuf);
+      let yearTemp = dateTemp.getFullYear();
+      let monthTemp = dateTemp.getMonth() + 1;
+      let dayTemp = dateTemp.getDate()+1;
+      let paddedMonthTmp = monthTemp.toString();
+      if (paddedMonthTmp.length < 2){
+        paddedMonthTmp = "0" + paddedMonthTmp;
+      }
+      let paddedDateTmp = dayTemp.toString();
+      if (paddedDateTmp.length < 2){
+        paddedDateTmp = "0" + paddedDateTmp;
+      }
+      let packingEndDate = `${yearTemp}-${paddedMonthTmp}-${paddedDateTmp}`
+      
+      if (packingEndDate != "NaN-NaN-NaN"){
+        endDate = packingEndDate;
+      }else{
+        endDate = "";
+      }
     }else{
       endDate = "";
     }
-    
+    if (allDayVal == true){
+      time = ""
+      endTime =""
+    }
+    //알람
+    if (todo == "" || date== ""){
+      alert("설정을 다시 확인해 주세요");
+      longSchedulModalHide();
+      modalAllDayHide();
+      return false;
+    }
+
+    if (allDayVal == false && longSchedulVal == false && endTime != ""){
+      let inTimeErrB = time.split(":").join("");
+      let endTuimErrB = endTime.split(":").join("");
+      if (inTimeErrB > endTuimErrB){
+        alert("시간 설정이 잘못 설정 되었습니다");
+        longSchedulModalHide();
+        modalAllDayHide();
+        return false;
+      }
+    }
+    if(allDayVal == false && longSchedulVal == false && endTime == "" && time == ""){
+      alert("시간 설정을 하지 않았습니다");
+      longSchedulModalHide();
+      modalAllDayHide();
+      return false;
+    }
+    if (longSchedulVal == true){
+      let inDateErr = date.split("-").join("");
+      let inEndDateErr = endDate.split("-").join("");
+      if (inDateErr >= inEndDateErr){
+        alert("날짜 설정이 잘못 설정 되었습니다");
+        longSchedulModalHide();
+        modalAllDayHide();
+        return false;
+      }else if ((inEndDateErr - inDateErr)<=1){
+        alert("하루 종일 시간 Check로 설정해 주세요");
+        longSchedulModalHide();
+        modalAllDayHide();
+        return false;
+      }
+    } 
+
+    closeModalBox();
+
     calendar.getEventById(id).remove();
 
 
@@ -648,11 +729,14 @@ function todosMain () {
         todoList[i]={
           id : id,
           todo : todo,
-          category : category,
+          // category : category,
           date : date,
           endDate : endDate,
           time : time,
+          endTime : endTime,
           done : false,
+          allDay : allDayVal,
+          longSchedul : longSchedulVal,
         };
 
         eventAddCalendar(todoList[i]); 
@@ -669,7 +753,7 @@ function todosMain () {
           tdItemList[i].innerText = formatDate(date);
           break;
         case "endDate" :
-          tdItemList[i].innerText = formatDate(endDate);
+          tdItemList[i].innerText = formatEndDate(endDate);
           break;
         case "time" :
           tdItemList[i].innerText = time;
@@ -677,9 +761,9 @@ function todosMain () {
         case "todo" :
           tdItemList[i].innerText = todo;
           break;
-        case "category" :
-          tdItemList[i].innerText = category;
-          break;
+        // case "category" :
+        //   tdItemList[i].innerText = category;
+        //   break;
       }
     }
   }
@@ -702,34 +786,45 @@ function todosMain () {
   //수정창 값 채우기
   function preFillEditForm(id){
     let result = todoList.find(todoObj => todoObj.id == id);
-    let {todo, category, date, endDate, time} = result;
-
-    let tdDateTemp = new Date(endDate);
-    let tdYearTemp = tdDateTemp.getFullYear();
-    let tdMonthTemp = tdDateTemp.getMonth() + 1;
-    let tdDayTemp = tdDateTemp.getDate()-1;
-    let tdPaddedMonthTmp = tdMonthTemp.toString();
-    if (tdPaddedMonthTmp.length < 2){
-      tdPaddedMonthTmp = "0" + tdPaddedMonthTmp;
+    let {todo, category, date, endDate, time, endTime, allDay, longSchedul} = result;
+    let modalFillDateTemp = new Date(endDate);
+    let modalFillYearTemp = modalFillDateTemp.getFullYear();
+    let modalFillMonthTemp = modalFillDateTemp.getMonth() + 1;
+    let modalFillDayTemp = modalFillDateTemp.getDate()-1;
+    let modalFillPaddedMonthTmp = modalFillMonthTemp.toString();
+    if (modalFillPaddedMonthTmp.length < 2){
+      modalFillPaddedMonthTmp = "0" + modalFillPaddedMonthTmp;
     }
-    let tdPaddedDayTmp = tdDayTemp.toString();
-    if (tdPaddedDayTmp.length < 2){
-      tdPaddedDayTmp = "0" + tdPaddedDayTmp;
+    let modalFillPaddedDayTmp = modalFillDayTemp.toString();
+    if (modalFillPaddedDayTmp.length < 2){
+      modalFillPaddedDayTmp = "0" + modalFillPaddedDayTmp;
     }
-    let tdPackingEndDate = `${tdYearTemp}-${tdPaddedMonthTmp}-${tdPaddedDayTmp}`
+    let modalFillPackingEndDate = `${modalFillYearTemp}-${modalFillPaddedMonthTmp}-${modalFillPaddedDayTmp}`
     let modalEndDate;
-    if (tdPackingEndDate != "NaN-NaN-NaN"){
+    if (modalFillPackingEndDate != "NaN-NaN-NaN"){
       // tdEndDateList.innerText = endDate;
-      modalEndDate = tdPackingEndDate;
+      modalEndDate = modalFillPackingEndDate;
     }else{
       modalEndDate = "";
     }
+    document.getElementById("longSchedulModal").checked = longSchedul;
+    document.getElementById("modalAllDay").checked = allDay;
+    if (longSchedul== true){
+      longSchedulModalHide()
+    }else{
+      if(allDay== true){
+        modalAllDayHide()
+      }
+      else{
+        longSchedulModalHide()
+      }
+    }
     document.getElementById("modalEditTodo").value = todo;
-    document.getElementById("modalEditCategory").value = category;
+    // document.getElementById("modalEditCategory").value = category;
     document.getElementById("modalEditDate").value = date;
     document.getElementById("modalEditEndDate").value = modalEndDate;
     document.getElementById("modalEditTime").value = time;
-    document.getElementById("modalEditEndTime").value = time;
+    document.getElementById("modalEditEndTime").value = endTime;
     changeBtn.dataset.id = id;
   }
 
@@ -881,15 +976,23 @@ function todosMain () {
   function allDayHide (){
     let allDayStatus = allDay.checked;
     let timeRightClass = document.getElementsByClassName("timeRight")
+    let displayEndDayClass = document.getElementsByClassName("displayEndDay")
     if (allDayStatus == true){
       for ( let i = 0; i < timeRightClass.length; i++){
         timeRightClass[i].style.cssText = "display : none"
         timeInput.value = "";
         endTimeInput.value = "";
       }
+      for ( let i = 0; i < displayEndDayClass.length; i++){
+        displayEndDayClass[i].style.cssText = "display : none"
+      }
     }else{
       for ( let i = 0; i < timeRightClass.length; i++){
         timeRightClass[i].style.cssText = "display : "
+      }
+      for ( let i = 0; i < displayEndDayClass.length; i++){
+        displayEndDayClass[i].style.cssText = "display : none"
+        endDateInput.value = "";
       }
     }
   }
@@ -926,21 +1029,31 @@ function todosMain () {
       }
     }
   }
-   
-  
+    
   function modalAllDayHide(){
     let modalAllDayStatus = modalAllDay.checked;
     let timeRightModalClass = document.getElementsByClassName("timeRightModal")
+    let diplayEndDateModalClass = document.getElementsByClassName("diplayEndDateModal")
+    let timeLeftModalClass = document.getElementsByClassName("timeLeftModal")
     if (modalAllDayStatus == true){
       for ( let i = 0; i < timeRightModalClass.length; i++){
         timeRightModalClass[i].style.cssText = "display : none"
         modalEditTime.value = "";
         modalEditEndTime.value = "";
       }
+      for ( let i = 0; i < diplayEndDateModalClass.length; i++){
+        diplayEndDateModalClass[i].style.cssText = "display : none"
+      }
     }
     if (modalAllDayStatus == false){
       for ( let i = 0; i < timeRightModalClass.length; i++){
         timeRightModalClass[i].style.cssText = "display : "
+      }
+      for ( let i = 0; i < diplayEndDateModalClass.length; i++){
+        diplayEndDateModalClass[i].style.cssText = "display : none"
+      }
+      for ( let i = 0 ;  i < timeLeftModalClass.length; i++){
+        timeLeftModalClass[i].style.cssText = "display : "
       }
     }
   }
